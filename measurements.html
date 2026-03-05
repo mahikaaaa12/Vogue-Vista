@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VOGUE VISTA — Body Shape Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --ink: #0E0C0A;
+    --warm-gray: #8A8278;
+    --gold: #C4A96B;
+    --gold-light: #E8D5A3;
+    --rose: #D4A5A0;
+    --deep: #1A1612;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+    min-height: 100vh;
+  }
+
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(196,169,107,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  .progress-bar {
+    position: fixed;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: var(--gold);
+    z-index: 200;
+    transition: width 0.1s ease;
+    box-shadow: 0 0 8px var(--gold);
+    width: 0%;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 48px;
+  }
+
+  .nav-logo {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    text-decoration: none;
+    line-height: 1.4;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--warm-gray);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--cream); }
+
+  .nav-back {
+    background: transparent;
+    border: 1px solid rgba(196,169,107,0.4);
+    color: var(--gold);
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 10px 24px;
+    text-decoration: none;
+    transition: all 0.3s;
+    text-transform: uppercase;
+  }
+  .nav-back:hover { background: var(--gold); color: var(--ink); }
+
+  /* HERO SPLIT */
+  .hero-split {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 75% 50%, rgba(196,169,107,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(212,165,160,0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(196,169,107,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(196,169,107,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+
+  .scan-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    animation: scan 7s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .scan-line:nth-child(1) { width: 55%; top: 28%; left: 22%; animation-delay: 0s; }
+  .scan-line:nth-child(2) { width: 38%; top: 55%; left: 32%; animation-delay: 2.5s; }
+  .scan-line:nth-child(3) { width: 48%; top: 73%; left: 12%; animation-delay: 5s; }
+
+  @keyframes scan {
+    0%   { opacity: 0; transform: translateX(-20px); }
+    30%  { opacity: 0.5; }
+    70%  { opacity: 0.5; }
+    100% { opacity: 0; transform: translateX(20px); }
+  }
+
+  /* LEFT */
+  .hero-left {
+    padding: 148px 64px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid rgba(196,169,107,0.12);
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.3s;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 36px; height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 5.5vw, 84px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.5s;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+
+  .hero-subtitle {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--warm-gray);
+    max-width: 370px;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.7s;
+  }
+
+  .shapes-showcase {
+    display: flex;
+    gap: 24px;
+    align-items: flex-end;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.9s;
+  }
+
+  .shape-fig {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.35;
+    transition: opacity 0.3s;
+  }
+  .shape-fig:hover { opacity: 1; }
+
+  .shape-fig svg { width: 26px; height: 44px; }
+
+  .shape-fig-label {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 7px;
+    letter-spacing: 0.18em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .deco-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 200px;
+    font-weight: 300;
+    color: rgba(196,169,107,0.04);
+    position: absolute;
+    bottom: -30px; left: 28px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RIGHT */
+  .hero-right {
+    padding: 148px 64px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-tag {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .form-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px;
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .form-heading em { font-style: italic; color: var(--gold); }
+
+  .form-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .fdl { flex: 1; height: 1px; background: rgba(196,169,107,0.2); }
+  .fdd { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); opacity: 0.6; }
+
+  /* GENDER TOGGLE */
+  .gender-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(196,169,107,0.15);
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+
+  .gender-btn {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    background: transparent;
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    cursor: none;
+    transition: all 0.25s;
+  }
+  .gender-btn.active { background: var(--gold); color: var(--ink); }
+
+  /* FIELDS */
+  .meas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 22px;
+    margin-bottom: 28px;
+  }
+
+  .field-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .field-label {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+
+  .field-row {
+    display: flex;
+    border: 1px solid rgba(196,169,107,0.18);
+    background: rgba(255,255,255,0.015);
+    transition: border-color 0.25s;
+  }
+  .field-row:focus-within { border-color: rgba(196,169,107,0.55); }
+
+  .field-row input {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--cream);
+    outline: none;
+  }
+  .field-row input::placeholder { color: rgba(138,130,120,0.3); font-size: 13px; }
+  .field-row input[type=number]::-webkit-inner-spin-button,
+  .field-row input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .field-row input[type=number] { -moz-appearance: textfield; }
+
+  .unit-sel {
+    padding: 0 14px;
+    border: none;
+    border-left: 1px solid rgba(196,169,107,0.15);
+    background: rgba(196,169,107,0.06);
+    font-family: 'Syncopate', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    color: var(--warm-gray);
+    cursor: none;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  /* BUTTON */
+  .btn-analyze {
+    width: 100%;
+    padding: 18px;
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    font-family: 'Syncopate', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .btn-analyze::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .btn-analyze:hover::before { transform: translateX(100%); }
+  .btn-analyze:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(196,169,107,0.22);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    text-decoration: none;
+    transition: color 0.25s, gap 0.25s;
+  }
+  .back-link:hover { color: var(--gold); gap: 16px; }
+  .back-link::before { content: '←'; font-family: serif; font-size: 1rem; }
+
+  /* RESULT */
+  #result { display: none; margin-top: 28px; animation: fadeUp 0.45s ease forwards; }
+
+  .result-card {
+    border: 1px solid rgba(196,169,107,0.2);
+    background: rgba(196,169,107,0.04);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.4s;
+  }
+  .result-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), var(--rose));
+  }
+  .result-card:hover { border-color: rgba(196,169,107,0.4); }
+
+  .result-icon { font-size: 2.5rem; line-height: 1; flex-shrink: 0; }
+
+  .result-label {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 8px;
+  }
+
+  .result-shape {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+
+  /* STATS */
+  .stats-strip {
+    display: flex;
+    border-top: 1px solid rgba(196,169,107,0.12);
+    border-bottom: 1px solid rgba(196,169,107,0.12);
+  }
+
+  .stat-item {
+    flex: 1;
+    padding: 44px 32px;
+    border-right: 1px solid rgba(196,169,107,0.12);
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .stat-label {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+  }
+
+  /* HOW IT WORKS */
+  .how-section {
+    padding: 110px 64px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid rgba(196,169,107,0.12);
+    position: relative;
+  }
+  .how-section::before {
+    content: '02';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 200px;
+    font-weight: 300;
+    color: rgba(196,169,107,0.04);
+    position: absolute;
+    top: 30px; left: 40px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .how-left {
+    padding-right: 72px;
+    border-right: 1px solid rgba(196,169,107,0.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .how-right {
+    padding-left: 72px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ns-tag {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .ns-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(34px, 3.5vw, 54px);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 28px;
+  }
+  .ns-heading em { font-style: italic; color: var(--gold); }
+
+  .ns-text {
+    font-size: 13px;
+    line-height: 1.95;
+    color: var(--warm-gray);
+    max-width: 400px;
+  }
+
+  .step-row {
+    padding: 34px 0;
+    border-bottom: 1px solid rgba(196,169,107,0.1);
+    display: flex;
+    gap: 26px;
+    align-items: flex-start;
+    position: relative;
+  }
+  .step-row:last-child { border-bottom: none; }
+  .step-row::before {
+    content: '';
+    position: absolute; left: -72px; top: 0; bottom: 0;
+    width: 2px; height: 0;
+    background: var(--gold);
+    transition: height 0.4s ease;
+  }
+  .step-row:hover::before { height: 100%; }
+
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    color: rgba(196,169,107,0.25);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 46px;
+  }
+
+  .step-title {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cream);
+    margin-bottom: 10px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--warm-gray);
+  }
+
+  /* SECTION DIVIDER */
+  .sec-div {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 0 64px;
+    margin: 8px 0;
+  }
+  .sec-div span {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .sec-div::before, .sec-div::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: rgba(196,169,107,0.15);
+  }
+
+  /* SHAPES REFERENCE */
+  .shapes-section {
+    padding: 110px 64px;
+    border-top: 1px solid rgba(196,169,107,0.12);
+  }
+
+  .shapes-header { margin-bottom: 64px; }
+
+  .shapes-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: rgba(196,169,107,0.1);
+    border: 1px solid rgba(196,169,107,0.1);
+  }
+
+  .shape-cell {
+    background: var(--ink);
+    padding: 44px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    transition: background 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .shape-cell::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+  .shape-cell:hover { background: rgba(196,169,107,0.04); }
+  .shape-cell:hover::before { width: 100%; }
+
+  .sc-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    color: rgba(196,169,107,0.35);
+    letter-spacing: 0.1em;
+    align-self: flex-start;
+  }
+
+  .shape-cell svg { width: 36px; height: 56px; opacity: 0.6; }
+
+  .sc-name {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .sc-desc {
+    font-size: 11px;
+    line-height: 1.7;
+    color: rgba(138,130,120,0.55);
+    text-align: center;
+  }
+
+  /* SHAPE TABS */
+  .shape-tabs {
+    display: inline-flex;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(196,169,107,0.18);
+    padding: 4px;
+    margin-top: 28px;
+  }
+  .shape-tab {
+    padding: 10px 32px;
+    border: none;
+    background: transparent;
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    cursor: none;
+    transition: all 0.25s;
+  }
+  .shape-tab.active { background: var(--gold); color: var(--ink); }
+
+  /* QUOTE */
+  .quote-section {
+    padding: 120px 64px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 80px;
+    align-items: center;
+    border-top: 1px solid rgba(196,169,107,0.12);
+    border-bottom: 1px solid rgba(196,169,107,0.12);
+  }
+
+  .quote-portrait {
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(196,169,107,0.18), rgba(212,165,160,0.12));
+    border: 1px solid rgba(196,169,107,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    color: var(--gold);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .quote-content blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 2.2vw, 30px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--cream);
+    margin-bottom: 28px;
+  }
+  .quote-content blockquote::before {
+    content: '"';
+    color: var(--gold);
+    font-size: 1.5em;
+    line-height: 0;
+    vertical-align: -0.3em;
+    margin-right: 6px;
+  }
+
+  .quote-attr {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 64px 40px;
+    border-top: 1px solid rgba(196,169,107,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .footer-links { display: flex; gap: 32px; list-style: none; }
+  .footer-links a {
+    color: var(--warm-gray);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-copy { font-size: 10px; color: rgba(138,130,120,0.4); }
+
+  /* REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-d1 { transition-delay: 0.15s; }
+  .reveal-d2 { transition-delay: 0.3s; }
+  .reveal-d3 { transition-delay: 0.45s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 980px) {
+    .hero-split { grid-template-columns: 1fr; }
+    .hero-left { padding: 140px 32px 60px; border-right: none; border-bottom: 1px solid rgba(196,169,107,0.12); }
+    .hero-right { padding: 60px 32px 80px; }
+    .how-section { grid-template-columns: 1fr; padding: 80px 32px; }
+    .how-left { padding-right: 0; border-right: none; border-bottom: 1px solid rgba(196,169,107,0.12); padding-bottom: 60px; margin-bottom: 60px; }
+    .how-right { padding-left: 0; }
+    .step-row::before { display: none; }
+    .shapes-grid { grid-template-columns: repeat(3, 1fr); }
+    .quote-section { grid-template-columns: 1fr; padding: 80px 32px; gap: 40px; }
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    footer, .sec-div, .shapes-section, .how-section { padding-left: 32px; padding-right: 32px; }
+    .stats-strip { flex-wrap: wrap; }
+    .stat-item { flex: 0 0 50%; border-bottom: 1px solid rgba(196,169,107,0.12); }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="bodyanalyses.html" class="nav-logo">VOGUE<br>VISTA</a>
+  <ul class="nav-links">
+    <li><a href="#analyzer" class="active">Analyzer</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#shapes">Shape Guide</a></li>
+  </ul>
+  <a href="demo.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<!-- HERO SPLIT -->
+<section class="hero-split" id="analyzer">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="scan-line"></div>
+  <div class="scan-line"></div>
+  <div class="scan-line"></div>
+
+  <!-- LEFT -->
+  <div class="hero-left">
+    <div class="hero-eyebrow">Body Morphology · Module 02</div>
+    <h1 class="hero-title">
+      Know your<br><em>body's</em><br>geometry.
+    </h1>
+    <p class="hero-subtitle">
+      Enter your measurements for precise body shape classification based on scientifically‑validated proportional ratios. Accurate results in seconds.
+    </p>
+
+    <div class="shapes-showcase">
+      <div class="shape-fig">
+        <svg viewBox="0 0 28 48" fill="none">
+          <path d="M14 2C8 2 5 9 5 15C5 21 8 24 8 34C8 42 11 46 14 46C17 46 20 42 20 34C20 24 23 21 23 15C23 9 20 2 14 2Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.1)"/>
+        </svg>
+        <span class="shape-fig-label">Pear</span>
+      </div>
+      <div class="shape-fig">
+        <svg viewBox="0 0 28 48" fill="none">
+          <path d="M5 2L23 2L25 14L16 22L25 32L23 46L5 46L3 32L12 22L3 14Z" stroke="#D4A5A0" stroke-width="0.8" fill="rgba(212,165,160,0.1)"/>
+        </svg>
+        <span class="shape-fig-label">Hourglass</span>
+      </div>
+      <div class="shape-fig">
+        <svg viewBox="0 0 28 48" fill="none">
+          <path d="M1 2L27 2L18 24L15 46L13 46L10 24Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.1)"/>
+        </svg>
+        <span class="shape-fig-label">Inv. Triangle</span>
+      </div>
+      <div class="shape-fig">
+        <svg viewBox="0 0 28 48" fill="none">
+          <rect x="5" y="2" width="18" height="44" rx="2" stroke="#8A8278" stroke-width="0.8" fill="rgba(138,130,120,0.1)"/>
+        </svg>
+        <span class="shape-fig-label">Rectangle</span>
+      </div>
+      <div class="shape-fig">
+        <svg viewBox="0 0 28 48" fill="none">
+          <ellipse cx="14" cy="26" rx="11" ry="20" stroke="#D4A5A0" stroke-width="0.8" fill="rgba(212,165,160,0.1)"/>
+        </svg>
+        <span class="shape-fig-label">Apple</span>
+      </div>
+    </div>
+
+    <div class="deco-num">02</div>
+  </div>
+
+  <!-- RIGHT FORM -->
+  <div class="hero-right">
+    <div class="section-tag">Body Shape Classification</div>
+    <h2 class="form-heading">Enter Your <em>Measurements</em></h2>
+
+    <div class="form-divider">
+      <div class="fdl"></div>
+      <div class="fdd"></div>
+      <div class="fdl"></div>
+    </div>
+
+    <!-- GENDER -->
+    <div class="gender-toggle">
+      <button class="gender-btn active" id="btn-female" onclick="setGender('female')">Female</button>
+      <button class="gender-btn" id="btn-male" onclick="setGender('male')">Male</button>
+    </div>
+    <input type="hidden" id="gender" value="female" />
+
+    <!-- MEASUREMENTS -->
+    <div class="meas-grid">
+      <div class="field-group">
+        <span class="field-label">Shoulder Width</span>
+        <div class="field-row">
+          <input type="number" id="shoulder" placeholder="e.g. 40" />
+          <select class="unit-sel" id="s_unit">
+            <option value="cm">CM</option>
+            <option value="inch">IN</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <span class="field-label">Chest / Bust</span>
+        <div class="field-row">
+          <input type="number" id="chest" placeholder="e.g. 90" />
+          <select class="unit-sel" id="c_unit">
+            <option value="cm">CM</option>
+            <option value="inch">IN</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <span class="field-label">Waist</span>
+        <div class="field-row">
+          <input type="number" id="waist" placeholder="e.g. 70" />
+          <select class="unit-sel" id="w_unit">
+            <option value="cm">CM</option>
+            <option value="inch">IN</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <span class="field-label">Hip</span>
+        <div class="field-row">
+          <input type="number" id="hip" placeholder="e.g. 95" />
+          <select class="unit-sel" id="h_unit">
+            <option value="cm">CM</option>
+            <option value="inch">IN</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-analyze" onclick="calculateBodyType()">Analyze Body Shape</button>
+    <a href="demo.html" class="back-link">Back to Home</a>
+
+    <div id="result">
+      <div class="result-card">
+        <div class="result-icon" id="result-icon"></div>
+        <div>
+          <p class="result-label">Your Body Shape</p>
+          <p class="result-shape" id="result-shape"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip reveal">
+  <div class="stat-item">
+    <div class="stat-num">5</div>
+    <div class="stat-label">Female Archetypes</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">5</div>
+    <div class="stat-label">Male Archetypes</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">4</div>
+    <div class="stat-label">Key Measurements</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">cm/in</div>
+    <div class="stat-label">Unit Support</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-left reveal">
+    <div class="ns-tag">Methodology</div>
+    <h2 class="ns-heading">Proportion<br><em>ratios decoded</em></h2>
+    <p class="ns-text">
+      Our classification system uses scientifically-validated proportional thresholds between four key skeletal landmarks — shoulders, chest, waist and hips — to determine body shape with precision. No camera required; just four measurements.
+    </p>
+  </div>
+  <div class="how-right">
+    <div class="step-row reveal reveal-d1">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Enter Measurements</div>
+        <p class="step-desc">Input shoulder width, chest/bust, waist, and hip circumference in centimetres or inches. All values are instantly converted for consistency.</p>
+      </div>
+    </div>
+    <div class="step-row reveal reveal-d2">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Ratio Analysis</div>
+        <p class="step-desc">The system calculates hip-to-waist ratio, shoulder-to-hip differential, and chest-to-waist differential to map your proportional signature.</p>
+      </div>
+    </div>
+    <div class="step-row reveal reveal-d3">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Shape Classification</div>
+        <p class="step-desc">Measurements are evaluated against gender-specific thresholds to produce an accurate classification from five female and five male archetypes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sec-div reveal"><span>Shape Reference Guide</span></div>
+
+<!-- SHAPES -->
+<section class="shapes-section" id="shapes">
+  <div class="shapes-header reveal">
+    <div class="ns-tag">Classification Reference</div>
+    <h2 class="ns-heading">Body Shape <em>Archetypes</em></h2>
+
+    <!-- TAB TOGGLE -->
+    <div class="shape-tabs">
+      <button class="shape-tab active" id="tab-female" onclick="switchTab('female')">Female</button>
+      <button class="shape-tab" id="tab-male" onclick="switchTab('male')">Male</button>
+    </div>
+  </div>
+
+  <!-- FEMALE GRID -->
+  <div class="shapes-grid" id="grid-female">
+    <div class="shape-cell reveal">
+      <span class="sc-num">01 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M18 3C11 3 7 11 7 18C7 25 11 29 11 41C11 49 14 53 18 53C22 53 25 49 25 41C25 29 29 25 29 18C29 11 25 3 18 3Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+        <line x1="5" y1="32" x2="31" y2="32" stroke="#C4A96B" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.5"/>
+      </svg>
+      <span class="sc-name">Pear</span>
+      <p class="sc-desc">Hips wider than shoulders, defined waist</p>
+    </div>
+    <div class="shape-cell reveal reveal-d1">
+      <span class="sc-num">02 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M7 3L29 3L33 18L22 28L33 38L29 53L7 53L3 38L14 28L3 18Z" stroke="#D4A5A0" stroke-width="0.8" fill="rgba(212,165,160,0.08)"/>
+      </svg>
+      <span class="sc-name">Hourglass</span>
+      <p class="sc-desc">Equal bust and hips, narrow waist</p>
+    </div>
+    <div class="shape-cell reveal reveal-d2">
+      <span class="sc-num">03 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M1 3L35 3L24 28L20 53L16 53L12 28Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+      </svg>
+      <span class="sc-name">Inv. Triangle</span>
+      <p class="sc-desc">Shoulders broader than hips</p>
+    </div>
+    <div class="shape-cell reveal reveal-d2">
+      <span class="sc-num">04 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <rect x="7" y="3" width="22" height="50" rx="3" stroke="#8A8278" stroke-width="0.8" fill="rgba(138,130,120,0.08)"/>
+      </svg>
+      <span class="sc-name">Rectangle</span>
+      <p class="sc-desc">Shoulders, waist and hips aligned</p>
+    </div>
+    <div class="shape-cell reveal reveal-d3">
+      <span class="sc-num">05 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <ellipse cx="18" cy="30" rx="14" ry="24" stroke="#D4A5A0" stroke-width="0.8" fill="rgba(212,165,160,0.08)"/>
+      </svg>
+      <span class="sc-name">Apple</span>
+      <p class="sc-desc">Weight at waist, high hip-waist ratio</p>
+    </div>
+  </div>
+
+  <!-- MALE GRID -->
+  <div class="shapes-grid" id="grid-male" style="display:none;">
+    <div class="shape-cell reveal">
+      <span class="sc-num">01 —</span>
+      <!-- Trapezoid: broad shoulders tapering to narrower waist/hips -->
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M3 6L33 6L27 50L9 50Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+        <line x1="3" y1="6" x2="33" y2="6" stroke="#C4A96B" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.6"/>
+        <line x1="9" y1="50" x2="27" y2="50" stroke="#C4A96B" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.6"/>
+      </svg>
+      <span class="sc-name">Trapezoid</span>
+      <p class="sc-desc">Broad shoulders, chest wider than waist</p>
+    </div>
+    <div class="shape-cell reveal reveal-d1">
+      <span class="sc-num">02 —</span>
+      <!-- Triangle: narrow shoulders, wider waist/hips -->
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M12 6L24 6L33 50L3 50Z" stroke="#D4A5A0" stroke-width="0.8" fill="rgba(212,165,160,0.08)"/>
+        <line x1="12" y1="6" x2="24" y2="6" stroke="#D4A5A0" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.6"/>
+        <line x1="3" y1="50" x2="33" y2="50" stroke="#D4A5A0" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.6"/>
+      </svg>
+      <span class="sc-name">Triangle</span>
+      <p class="sc-desc">Waist wider than shoulders and chest</p>
+    </div>
+    <div class="shape-cell reveal reveal-d2">
+      <span class="sc-num">03 —</span>
+      <!-- Oval: round midsection, weight at belly -->
+      <svg viewBox="0 0 36 56" fill="none">
+        <ellipse cx="18" cy="28" rx="15" ry="22" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+        <line x1="3" y1="28" x2="33" y2="28" stroke="#C4A96B" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.5"/>
+      </svg>
+      <span class="sc-name">Oval</span>
+      <p class="sc-desc">Waist larger than chest and shoulders</p>
+    </div>
+    <div class="shape-cell reveal reveal-d2">
+      <span class="sc-num">04 —</span>
+      <!-- Rectangle: uniform width top to bottom -->
+      <svg viewBox="0 0 36 56" fill="none">
+        <rect x="7" y="3" width="22" height="50" rx="3" stroke="#8A8278" stroke-width="0.8" fill="rgba(138,130,120,0.08)"/>
+        <line x1="7" y1="18" x2="29" y2="18" stroke="#8A8278" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.5"/>
+        <line x1="7" y1="36" x2="29" y2="36" stroke="#8A8278" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.5"/>
+      </svg>
+      <span class="sc-name">Rectangle</span>
+      <p class="sc-desc">Shoulders, waist and chest uniformly aligned</p>
+    </div>
+    <div class="shape-cell reveal reveal-d3">
+      <span class="sc-num">05 —</span>
+      <!-- V-Shape / Athletic: wide shoulders tapering sharply -->
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M1 4L35 4L22 53L14 53Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+        <line x1="1" y1="4" x2="35" y2="4" stroke="#C4A96B" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.7"/>
+        <line x1="11" y1="34" x2="25" y2="34" stroke="#C4A96B" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.4"/>
+      </svg>
+      <span class="sc-name">Athletic / V</span>
+      <p class="sc-desc">Shoulders &gt; chest &gt; waist, V-taper</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section reveal">
+  <div class="quote-portrait">✦</div>
+  <div class="quote-content">
+    <blockquote>
+      Self-knowledge begins with understanding your body's unique geometry — not to conform standards, but to align with your own natural architecture.
+    </blockquote>
+    <div class="quote-attr">Vogue Vista · Body Intelligence Series</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="bodyanalyses.html" class="footer-logo">VOGUE VISTA</a>
+  <ul class="footer-links">
+    <li><a href="#">Privacy Policy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">API Docs</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <span class="footer-copy">© VV 2025</span>
+</footer>
+
+<script>
+  /* Cursor */
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    cursor.style.left=mx-4+'px';
+    cursor.style.top=my-4+'px';
+  });
+
+  const lerp=(a,b,t)=>a+(b-a)*t;
+
+  (function tick(){
+    rx=lerp(rx,mx,0.12); ry=lerp(ry,my,0.12);
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(tick);
+  })();
+
+  document.querySelectorAll('a,button,select,.shape-tab').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ ring.style.width='56px'; ring.style.height='56px'; ring.style.borderColor='rgba(196,169,107,0.9)'; });
+    el.addEventListener('mouseleave',()=>{ ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(196,169,107,0.5)'; });
+  });
+
+  /* Progress */
+  const bar=document.getElementById('progressBar');
+  window.addEventListener('scroll',()=>{
+    bar.style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+  });
+
+  /* Scroll reveal */
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }),{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  /* Shape tab toggle */
+  function switchTab(t){
+    const gf=document.getElementById('grid-female');
+    const gm=document.getElementById('grid-male');
+    const tf=document.getElementById('tab-female');
+    const tm=document.getElementById('tab-male');
+    if(t==='female'){
+      gf.style.display=''; gm.style.display='none';
+      tf.classList.add('active'); tm.classList.remove('active');
+    } else {
+      gm.style.display=''; gf.style.display='none';
+      tm.classList.add('active'); tf.classList.remove('active');
+    }
+  }
+
+  /* Gender toggle */
+  function setGender(g){
+    document.getElementById('gender').value=g;
+    document.getElementById('btn-female').classList.toggle('active',g==='female');
+    document.getElementById('btn-male').classList.toggle('active',g==='male');
+  }
+
+  /* Unit convert */
+  function convertToCm(v,u){ return u==='inch'?v*2.54:v; }
+
+  /* Body type — original logic, unchanged */
+  function calculateBodyType(){
+    const gender  =document.getElementById('gender').value;
+    const shoulder=convertToCm(parseFloat(document.getElementById('shoulder').value),document.getElementById('s_unit').value);
+    const chest   =convertToCm(parseFloat(document.getElementById('chest').value),   document.getElementById('c_unit').value);
+    const waist   =convertToCm(parseFloat(document.getElementById('waist').value),   document.getElementById('w_unit').value);
+    const hip     =convertToCm(parseFloat(document.getElementById('hip').value),      document.getElementById('h_unit').value);
+
+    if([shoulder,chest,waist,hip].some(isNaN)){ alert('Please enter all four measurements.'); return; }
+
+    let icon='', shape='';
+    const hipWaistRatio=hip/waist;
+
+    if(gender==='female'){
+      if     (hip>shoulder && hip>chest && waist<hip*0.75)                         {icon='🍐';shape='Pear Shape';}
+      else if(Math.abs(chest-hip)<=3 && waist<chest*0.75)                         {icon='⏳';shape='Hourglass Shape';}
+      else if(shoulder>hip && shoulder>chest)                                      {icon='🔺';shape='Inverted Triangle';}
+      else if(Math.abs(chest-waist)<=3 && Math.abs(waist-hip)<=3)                 {icon='⬜';shape='Rectangle Shape';}
+      else if(hipWaistRatio>1.25)                                                  {icon='🍎';shape='Apple Shape';}
+      else                                                                         {icon='🔍';shape='Could not classify accurately';}
+    } else {
+      if     (shoulder>waist && chest>waist)                                       {icon='🔶';shape='Trapezoid';}
+      else if(waist>shoulder && waist>chest)                                       {icon='🔻';shape='Triangle';}
+      else if(waist>chest && waist>shoulder)                                       {icon='⚪';shape='Oval Shape';}
+      else if(shoulder===waist && waist===chest)                                   {icon='⬜';shape='Rectangle / Straight Shape';}
+      else if(shoulder>chest && chest>waist)                                       {icon='🏋️';shape='Athletic / V Shape';}
+      else                                                                         {icon='🔍';shape='Could not classify accurately';}
+    }
+
+    document.getElementById('result-icon').textContent=icon;
+    document.getElementById('result-shape').textContent=shape;
+
+    const r=document.getElementById('result');
+    r.style.display='block';
+    r.style.animation='none';
+    requestAnimationFrame(()=>{ r.style.animation=''; });
+  }
+</script>
+</body>
+</html>

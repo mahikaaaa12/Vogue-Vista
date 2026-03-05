@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VOGUE VISTA — Photo Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --ink:   #0E0C0A;
+    --warm-gray: #8A8278;
+    --gold:  #C4A96B;
+    --gold-light: #E8D5A3;
+    --rose:  #D4A5A0;
+    --deep:  #1A1612;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+    min-height: 100vh;
+  }
+
+  /* ── CURSOR ── */
+  .cursor {
+    position: fixed; width: 8px; height: 8px;
+    background: var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed; width: 36px; height: 36px;
+    border: 1px solid rgba(196,169,107,0.5);
+    border-radius: 50%; pointer-events: none; z-index: 9998;
+    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed; bottom: 0; left: 0;
+    height: 2px; background: var(--gold);
+    z-index: 200; transition: width 0.1s ease;
+    box-shadow: 0 0 8px var(--gold);
+    width: 0%;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 48px;
+  }
+
+  .nav-logo {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--cream);
+    text-decoration: none; line-height: 1.4;
+  }
+
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    color: var(--warm-gray); text-decoration: none;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: color 0.3s; font-family: 'DM Sans', sans-serif;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--cream); }
+
+  .nav-back {
+    background: transparent; border: 1px solid rgba(196,169,107,0.4);
+    color: var(--gold); font-family: 'Syncopate', sans-serif;
+    font-size: 9px; letter-spacing: 0.2em;
+    padding: 10px 24px; text-decoration: none;
+    transition: all 0.3s; text-transform: uppercase;
+  }
+  .nav-back:hover { background: var(--gold); color: var(--ink); }
+
+  /* ── HERO SPLIT ── */
+  .hero-split {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 75% 50%, rgba(196,169,107,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(212,165,160,0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(196,169,107,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(196,169,107,0.04) 1px, transparent 1px);
+    background-size: 80px 80px; pointer-events: none;
+  }
+
+  .scan-line {
+    position: absolute; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0; animation: scan 7s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .scan-line:nth-child(1) { width: 55%; top: 28%; left: 22%; animation-delay: 0s; }
+  .scan-line:nth-child(2) { width: 38%; top: 55%; left: 32%; animation-delay: 2.5s; }
+  .scan-line:nth-child(3) { width: 48%; top: 73%; left: 12%; animation-delay: 5s; }
+  @keyframes scan { 0%{opacity:0;transform:translateX(-20px);} 30%{opacity:0.5;} 70%{opacity:0.5;} 100%{opacity:0;transform:translateX(20px);} }
+
+  /* ── HERO LEFT ── */
+  .hero-left {
+    padding: 148px 64px 80px;
+    display: flex; flex-direction: column; justify-content: center;
+    border-right: 1px solid rgba(196,169,107,0.12);
+    position: relative; z-index: 2; overflow: hidden;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 9px; letter-spacing: 0.3em;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 32px; display: flex; align-items: center; gap: 16px;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.3s;
+  }
+  .hero-eyebrow::before { content: ''; display: inline-block; width: 36px; height: 1px; background: var(--gold); flex-shrink: 0; }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 5.5vw, 84px);
+    font-weight: 300; line-height: 0.95; letter-spacing: -0.02em;
+    margin-bottom: 36px;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.5s;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+
+  .hero-subtitle {
+    font-size: 14px; line-height: 1.9;
+    color: var(--warm-gray); max-width: 370px; margin-bottom: 52px;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.7s;
+  }
+
+  /* camera icon display */
+  .photo-showcase {
+    display: flex; gap: 28px; align-items: center;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.9s;
+  }
+  .photo-feat {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    opacity: 0.35; transition: opacity 0.3s;
+  }
+  .photo-feat:hover { opacity: 1; }
+  .photo-feat svg { width: 32px; height: 32px; }
+  .photo-feat-label {
+    font-family: 'Syncopate', sans-serif; font-size: 7px;
+    letter-spacing: 0.18em; color: var(--warm-gray); text-transform: uppercase; white-space: nowrap;
+  }
+
+  .deco-num {
+    font-family: 'Cormorant Garamond', serif; font-size: 200px; font-weight: 300;
+    color: rgba(196,169,107,0.04);
+    position: absolute; bottom: -30px; left: 28px;
+    line-height: 1; pointer-events: none; user-select: none;
+  }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(28px);} to{opacity:1;transform:translateY(0);} }
+
+  /* ── HERO RIGHT (Upload Form) ── */
+  .hero-right {
+    padding: 148px 64px 80px;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; z-index: 2;
+  }
+
+  .section-tag {
+    font-family: 'Syncopate', sans-serif; font-size: 9px;
+    letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px;
+  }
+
+  .form-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px; font-weight: 300; line-height: 1.2; margin-bottom: 8px;
+  }
+  .form-heading em { font-style: italic; color: var(--gold); }
+
+  .form-divider {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 32px;
+  }
+  .fdl { flex: 1; height: 1px; background: rgba(196,169,107,0.2); }
+  .fdd { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); opacity: 0.6; }
+
+  /* GENDER TOGGLE */
+  .gender-toggle {
+    display: flex; background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(196,169,107,0.15);
+    padding: 4px; margin-bottom: 28px;
+  }
+  .gender-btn {
+    flex: 1; padding: 11px; border: none; background: transparent;
+    font-family: 'Syncopate', sans-serif; font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--warm-gray); cursor: none; transition: all 0.25s;
+  }
+  .gender-btn.active { background: var(--gold); color: var(--ink); }
+
+  /* UPLOAD BOX */
+  .upload-zone {
+    border: 1px solid rgba(196,169,107,0.18);
+    background: rgba(255,255,255,0.015);
+    padding: 44px 32px;
+    text-align: center;
+    transition: border-color 0.3s, background 0.3s;
+    cursor: pointer; margin-bottom: 24px;
+    position: relative; overflow: hidden;
+  }
+  .upload-zone::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: var(--gold); transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.35s ease;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: rgba(196,169,107,0.55); background: rgba(196,169,107,0.04);
+  }
+  .upload-zone:hover::before, .upload-zone.dragover::before { transform: scaleY(1); }
+
+  .upload-icon-wrap {
+    width: 56px; height: 56px; border-radius: 50%;
+    border: 1px solid rgba(196,169,107,0.25);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+    background: rgba(196,169,107,0.05);
+    transition: border-color 0.3s;
+  }
+  .upload-zone:hover .upload-icon-wrap { border-color: rgba(196,169,107,0.6); }
+  .upload-icon-wrap svg { width: 24px; height: 24px; }
+
+  .upload-title {
+    font-family: 'Syncopate', sans-serif; font-size: 10px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream);
+    margin-bottom: 8px; display: block;
+  }
+  .upload-sub { font-size: 12px; color: var(--warm-gray); line-height: 1.7; }
+
+  /* preview */
+  .upload-preview {
+    margin-top: 22px; display: none;
+    border: 1px solid rgba(196,169,107,0.2); overflow: hidden; position: relative;
+  }
+  .upload-preview img { width: 100%; max-height: 200px; object-fit: cover; display: block; filter: brightness(0.85) contrast(1.05); }
+  .preview-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: 'Syncopate', sans-serif; font-size: 7px; letter-spacing: 0.2em;
+    background: rgba(14,12,10,0.85); color: var(--gold);
+    padding: 5px 10px; text-transform: uppercase;
+  }
+  .preview-name {
+    padding: 10px 16px; background: rgba(196,169,107,0.04);
+    font-size: 11px; color: var(--warm-gray); display: block;
+    border-top: 1px solid rgba(196,169,107,0.1);
+    font-family: 'Syncopate', sans-serif; letter-spacing: 0.1em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ANALYSE BUTTON */
+  .btn-analyze {
+    width: 100%; padding: 18px;
+    background: var(--gold); color: var(--ink);
+    border: none; font-family: 'Syncopate', sans-serif;
+    font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+    cursor: none; transition: all 0.3s;
+    position: relative; overflow: hidden; margin-bottom: 18px;
+  }
+  .btn-analyze::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%); transition: transform 0.5s ease;
+  }
+  .btn-analyze:hover::before { transform: translateX(100%); }
+  .btn-analyze:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(196,169,107,0.22); }
+  .btn-analyze:disabled { opacity: 0.38; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+  /* LOADING */
+  .loading-row {
+    display: none; align-items: center; gap: 14px; margin-bottom: 14px;
+  }
+  .loading-row.show { display: flex; }
+  .ld { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: blink 1.2s infinite; }
+  .ld:nth-child(2){animation-delay:0.2s;} .ld:nth-child(3){animation-delay:0.4s;}
+  @keyframes blink { 0%,100%{opacity:0.2;} 50%{opacity:1;} }
+  .loading-txt { font-family:'Syncopate',sans-serif; font-size:8px; letter-spacing:0.25em; color:var(--gold); text-transform:uppercase; }
+
+  /* BACK LINK */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Syncopate', sans-serif; font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--warm-gray); text-decoration: none;
+    transition: color 0.25s, gap 0.25s;
+  }
+  .back-link:hover { color: var(--gold); gap: 16px; }
+  .back-link::before { content: '←'; font-family: serif; font-size: 1rem; }
+
+  /* ── RICH RESULT PANEL ── */
+  #result { display: none; margin-top: 28px; animation: fadeUp 0.55s ease forwards; }
+
+  /* Header */
+  .res-header {
+    border: 1px solid rgba(196,169,107,0.25); background: rgba(196,169,107,0.05);
+    padding: 22px 26px; display: flex; align-items: center; gap: 18px;
+    position: relative; overflow: hidden; margin-bottom: 1px;
+  }
+  .res-header::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(to bottom, var(--gold), var(--rose));
+  }
+  .res-emoji { font-size: 2rem; line-height: 1; flex-shrink: 0; }
+  .res-title-block { flex: 1; }
+  .res-tag {
+    font-family: 'Syncopate', sans-serif; font-size: 7px; letter-spacing: 0.3em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 4px;
+  }
+  .res-shape-name {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.75rem;
+    font-weight: 300; font-style: italic; color: var(--cream); line-height: 1;
+  }
+  .res-confidence-badge {
+    font-family: 'Syncopate', sans-serif; font-size: 11px; font-weight: 700;
+    color: var(--gold); letter-spacing: 0.08em; flex-shrink: 0;
+  }
+  .res-confidence-label {
+    font-family: 'Syncopate', sans-serif; font-size: 6px; letter-spacing: 0.2em;
+    color: var(--warm-gray); text-transform: uppercase; text-align: right;
+  }
+
+  /* Description */
+  .res-desc-block {
+    border: 1px solid rgba(196,169,107,0.12); border-top: none;
+    padding: 18px 26px; background: rgba(255,255,255,0.01); margin-bottom: 1px;
+  }
+  .res-desc { font-size: 12.5px; line-height: 1.9; color: var(--warm-gray); }
+
+  /* Proportion bars */
+  .res-section {
+    border: 1px solid rgba(196,169,107,0.12); border-top: none;
+    padding: 18px 26px; background: rgba(255,255,255,0.01); margin-bottom: 1px;
+  }
+  .res-section-title {
+    font-family: 'Syncopate', sans-serif; font-size: 7.5px; letter-spacing: 0.28em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .res-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(196,169,107,0.15); }
+
+  .prop-row { margin-bottom: 12px; }
+  .prop-row:last-child { margin-bottom: 0; }
+  .prop-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+  .prop-name { font-family: 'Syncopate', sans-serif; font-size: 7.5px; letter-spacing: 0.18em; color: var(--cream); text-transform: uppercase; }
+  .prop-val { font-family: 'Cormorant Garamond', serif; font-size: 13px; color: var(--gold); }
+  .prop-track { height: 2px; background: rgba(196,169,107,0.1); position: relative; overflow: visible; }
+  .prop-fill {
+    height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    width: 0%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+    position: relative;
+  }
+  .prop-fill::after {
+    content: ''; position: absolute; right: -1px; top: -3px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 6px var(--gold);
+  }
+
+  /* Traits grid */
+  .traits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .trait-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border: 1px solid rgba(196,169,107,0.12);
+    background: rgba(196,169,107,0.03);
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .trait-chip:hover { border-color: rgba(196,169,107,0.3); background: rgba(196,169,107,0.07); }
+  .trait-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+  .trait-txt { font-size: 11px; color: var(--cream); line-height: 1.3; }
+
+  /* Style tips */
+  .style-list { display: flex; flex-direction: column; gap: 0; }
+  .style-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid rgba(196,169,107,0.07);
+  }
+  .style-item:last-child { border-bottom: none; }
+  .style-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .style-txt { font-size: 12px; line-height: 1.6; color: var(--warm-gray); }
+  .style-txt strong { color: var(--cream); font-weight: 400; }
+
+  /* Wear / Avoid two-col */
+  .wear-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .wear-col-head {
+    font-family: 'Syncopate', sans-serif; font-size: 7px; letter-spacing: 0.22em;
+    text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .wear-col-head.wear { color: #8dba8d; }
+  .wear-col-head.avoid { color: #c97a7a; }
+  .wear-col-head span { font-size: 10px; }
+  .wear-item {
+    display: flex; align-items: flex-start; gap: 7px;
+    margin-bottom: 7px; font-size: 11px; color: var(--warm-gray); line-height: 1.4;
+  }
+  .wear-item::before { content: '—'; color: rgba(196,169,107,0.4); flex-shrink: 0; font-size: 10px; }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    display: flex;
+    border-top: 1px solid rgba(196,169,107,0.12);
+    border-bottom: 1px solid rgba(196,169,107,0.12);
+  }
+  .stat-item {
+    flex: 1; padding: 44px 32px;
+    border-right: 1px solid rgba(196,169,107,0.12);
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif; font-size: 48px;
+    font-weight: 300; color: var(--gold); line-height: 1; margin-bottom: 10px;
+  }
+  .stat-label {
+    font-family: 'Syncopate', sans-serif; font-size: 9px;
+    letter-spacing: 0.15em; color: var(--warm-gray); text-transform: uppercase;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-section {
+    padding: 110px 64px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border-top: 1px solid rgba(196,169,107,0.12); position: relative;
+  }
+  .how-section::before {
+    content: '02'; font-family: 'Cormorant Garamond', serif;
+    font-size: 200px; font-weight: 300; color: rgba(196,169,107,0.04);
+    position: absolute; top: 30px; left: 40px; line-height: 1; pointer-events: none;
+  }
+  .how-left {
+    padding-right: 72px; border-right: 1px solid rgba(196,169,107,0.12);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .how-right { padding-left: 72px; display: flex; flex-direction: column; }
+
+  .ns-tag {
+    font-family: 'Syncopate', sans-serif; font-size: 9px;
+    letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 24px;
+  }
+  .ns-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(34px, 3.5vw, 54px); font-weight: 300;
+    line-height: 1.1; margin-bottom: 28px;
+  }
+  .ns-heading em { font-style: italic; color: var(--gold); }
+  .ns-text { font-size: 13px; line-height: 1.95; color: var(--warm-gray); max-width: 400px; }
+
+  .step-row {
+    padding: 34px 0; border-bottom: 1px solid rgba(196,169,107,0.1);
+    display: flex; gap: 26px; align-items: flex-start; position: relative;
+  }
+  .step-row:last-child { border-bottom: none; }
+  .step-row::before {
+    content: ''; position: absolute; left: -72px; top: 0; bottom: 0;
+    width: 2px; height: 0; background: var(--gold); transition: height 0.4s ease;
+  }
+  .step-row:hover::before { height: 100%; }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif; font-size: 38px;
+    font-weight: 300; color: rgba(196,169,107,0.25); line-height: 1; flex-shrink: 0; width: 46px;
+  }
+  .step-title {
+    font-family: 'Syncopate', sans-serif; font-size: 10px;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--cream); margin-bottom: 10px;
+  }
+  .step-desc { font-size: 13px; line-height: 1.85; color: var(--warm-gray); }
+
+  /* ── SECTION DIVIDER ── */
+  .sec-div {
+    display: flex; align-items: center; gap: 24px; padding: 0 64px; margin: 8px 0;
+  }
+  .sec-div span {
+    font-family: 'Syncopate', sans-serif; font-size: 9px;
+    letter-spacing: 0.3em; color: var(--warm-gray); text-transform: uppercase; white-space: nowrap;
+  }
+  .sec-div::before, .sec-div::after { content: ''; flex: 1; height: 1px; background: rgba(196,169,107,0.15); }
+
+  /* ── SHAPES REFERENCE ── */
+  .shapes-section { padding: 110px 64px; border-top: 1px solid rgba(196,169,107,0.12); }
+  .shapes-header { margin-bottom: 64px; }
+
+  .shape-tabs {
+    display: inline-flex; background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(196,169,107,0.18); padding: 4px; margin-top: 28px;
+  }
+  .shape-tab {
+    padding: 10px 32px; border: none; background: transparent;
+    font-family: 'Syncopate', sans-serif; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--warm-gray); cursor: none; transition: all 0.25s;
+  }
+  .shape-tab.active { background: var(--gold); color: var(--ink); }
+
+  .shapes-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 1px; background: rgba(196,169,107,0.1);
+    border: 1px solid rgba(196,169,107,0.1);
+  }
+  .shape-cell {
+    background: var(--ink); padding: 44px 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+    transition: background 0.4s; position: relative; overflow: hidden;
+  }
+  .shape-cell::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 0; height: 2px;
+    background: var(--gold); transition: width 0.4s ease;
+  }
+  .shape-cell:hover { background: rgba(196,169,107,0.04); }
+  .shape-cell:hover::before { width: 100%; }
+  .sc-num { font-family:'Cormorant Garamond',serif; font-size:11px; color:rgba(196,169,107,0.35); letter-spacing:0.1em; align-self:flex-start; }
+  .shape-cell svg { width: 36px; height: 56px; opacity: 0.6; }
+  .sc-name { font-family:'Syncopate',sans-serif; font-size:8px; letter-spacing:0.2em; color:var(--warm-gray); text-transform:uppercase; text-align:center; }
+  .sc-desc { font-size:11px; line-height:1.7; color:rgba(138,130,120,0.55); text-align:center; }
+
+  /* ── QUOTE ── */
+  .quote-section {
+    padding: 120px 64px;
+    display: grid; grid-template-columns: auto 1fr; gap: 80px;
+    align-items: center;
+    border-top: 1px solid rgba(196,169,107,0.12);
+    border-bottom: 1px solid rgba(196,169,107,0.12);
+  }
+  .quote-portrait {
+    width: 180px; height: 180px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(196,169,107,0.18), rgba(212,165,160,0.12));
+    border: 1px solid rgba(196,169,107,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 52px;
+    color: var(--gold); opacity: 0.7; flex-shrink: 0;
+  }
+  .quote-content blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 2.2vw, 30px); font-weight: 300; font-style: italic;
+    line-height: 1.55; color: var(--cream); margin-bottom: 28px;
+  }
+  .quote-content blockquote::before { content: '"'; color: var(--gold); font-size: 1.5em; line-height: 0; vertical-align: -0.3em; margin-right: 6px; }
+  .quote-attr { font-family:'Syncopate',sans-serif; font-size:9px; letter-spacing:0.28em; color:var(--warm-gray); text-transform:uppercase; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 48px 64px 40px;
+    border-top: 1px solid rgba(196,169,107,0.12);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .footer-logo { font-family:'Syncopate',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.15em; color:var(--cream); text-decoration:none; }
+  .footer-links { display:flex; gap:32px; list-style:none; }
+  .footer-links a { color:var(--warm-gray); font-size:10px; letter-spacing:0.1em; text-decoration:none; text-transform:uppercase; transition:color 0.3s; font-family:'DM Sans',sans-serif; }
+  .footer-links a:hover { color:var(--gold); }
+  .footer-copy { font-size:10px; color:rgba(138,130,120,0.4); }
+
+  /* ── REVEAL ── */
+  .reveal { opacity:0; transform:translateY(36px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity:1; transform:none; }
+  .reveal-d1 { transition-delay:0.15s; }
+  .reveal-d2 { transition-delay:0.3s; }
+  .reveal-d3 { transition-delay:0.45s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 980px) {
+    .hero-split { grid-template-columns: 1fr; }
+    .hero-left  { padding: 140px 32px 60px; border-right: none; border-bottom: 1px solid rgba(196,169,107,0.12); }
+    .hero-right { padding: 60px 32px 80px; }
+    .how-section { grid-template-columns: 1fr; padding: 80px 32px; }
+    .how-left   { padding-right: 0; border-right: none; border-bottom: 1px solid rgba(196,169,107,0.12); padding-bottom: 60px; margin-bottom: 60px; }
+    .how-right  { padding-left: 0; }
+    .step-row::before { display: none; }
+    .shapes-grid { grid-template-columns: repeat(3, 1fr); }
+    .quote-section { grid-template-columns: 1fr; padding: 80px 32px; gap: 40px; }
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    footer, .sec-div, .shapes-section, .how-section { padding-left: 32px; padding-right: 32px; }
+    .stats-strip { flex-wrap: wrap; }
+    .stat-item  { flex: 0 0 50%; border-bottom: 1px solid rgba(196,169,107,0.12); }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="demo.html" class="nav-logo">VOGUE<br>VISTA</a>
+  <ul class="nav-links">
+    <li><a href="#analyzer" class="active">Photo Scan</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#shapes">Silhouette Guide</a></li>
+  </ul>
+  <a href="demo.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<!-- HERO SPLIT -->
+<section class="hero-split" id="analyzer">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="scan-line"></div>
+  <div class="scan-line"></div>
+  <div class="scan-line"></div>
+
+  <!-- LEFT -->
+  <div class="hero-left">
+    <div class="hero-eyebrow">Visual Intelligence · Module 01</div>
+    <h1 class="hero-title">
+      One photo.<br><em>Every</em><br>answer.
+    </h1>
+    <p class="hero-subtitle">
+      No tape measure, no numbers, no guesswork. Submit a single image and let our computer vision engine decode your natural proportions in seconds.
+    </p>
+
+    <div class="photo-showcase">
+      <div class="photo-feat">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect x="3" y="8" width="26" height="18" rx="3" stroke="#C4A96B" stroke-width="0.9"/>
+          <circle cx="16" cy="17" r="5" stroke="#C4A96B" stroke-width="0.9"/>
+          <path d="M11 8l2-4h6l2 4" stroke="#C4A96B" stroke-width="0.9"/>
+          <circle cx="25" cy="12" r="1.5" fill="#C4A96B" opacity="0.6"/>
+        </svg>
+        <span class="photo-feat-label">Upload</span>
+      </div>
+      <div class="photo-feat">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M4 16h24M16 4v24" stroke="#D4A5A0" stroke-width="0.9" stroke-dasharray="3,2"/>
+          <rect x="8" y="8" width="16" height="16" stroke="#D4A5A0" stroke-width="0.9" opacity="0.5"/>
+        </svg>
+        <span class="photo-feat-label">Analyse</span>
+      </div>
+      <div class="photo-feat">
+        <svg viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="11" stroke="#C4A96B" stroke-width="0.9"/>
+          <path d="M10 16l4 4 8-8" stroke="#C4A96B" stroke-width="0.9" stroke-linecap="round"/>
+        </svg>
+        <span class="photo-feat-label">Classify</span>
+      </div>
+      <div class="photo-feat">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect x="6" y="4" width="20" height="24" rx="2" stroke="#8A8278" stroke-width="0.9"/>
+          <line x1="10" y1="11" x2="22" y2="11" stroke="#8A8278" stroke-width="0.9" opacity="0.6"/>
+          <line x1="10" y1="16" x2="22" y2="16" stroke="#8A8278" stroke-width="0.9" opacity="0.6"/>
+          <line x1="10" y1="21" x2="17" y2="21" stroke="#8A8278" stroke-width="0.9" opacity="0.6"/>
+        </svg>
+        <span class="photo-feat-label">Report</span>
+      </div>
+    </div>
+
+    <div class="deco-num">01</div>
+  </div>
+
+  <!-- RIGHT: UPLOAD FORM -->
+  <div class="hero-right">
+    <div class="section-tag">Vision-Powered Classification</div>
+    <h2 class="form-heading">Frame your <em>Silhouette</em></h2>
+
+    <div class="form-divider">
+      <div class="fdl"></div><div class="fdd"></div><div class="fdl"></div>
+    </div>
+
+    <!-- GENDER -->
+    <div class="gender-toggle">
+      <button class="gender-btn active" id="btn-female" onclick="setGender('female')">Female</button>
+      <button class="gender-btn" id="btn-male" onclick="setGender('male')">Male</button>
+    </div>
+
+    <!-- UPLOAD ZONE -->
+    <div class="upload-zone" id="uploadZone">
+      <div class="upload-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 16V8M12 8l-3 3M12 8l3 3" stroke="#C4A96B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="3" y="3" width="18" height="14" rx="2" stroke="#C4A96B" stroke-width="1.1"/>
+          <path d="M3 19h18" stroke="#C4A96B" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+          <path d="M7 21h10" stroke="#C4A96B" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
+        </svg>
+      </div>
+      <span class="upload-title">Drop Your Full-Body Photo</span>
+      <p class="upload-sub">Click or drag &amp; drop · JPG, PNG, WEBP<br>Stand straight, arms relaxed, plain background works best</p>
+
+      <div class="upload-preview" id="previewBox">
+        <img id="previewImg" src="" alt="Preview" />
+        <span class="preview-tag">◈ Ready</span>
+        <span class="preview-name" id="previewName"></span>
+      </div>
+
+      <input type="file" id="fileInput" accept="image/*" style="display:none;" />
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading-row" id="loadingRow">
+      <div class="ld"></div><div class="ld"></div><div class="ld"></div>
+      <span class="loading-txt">Analysing morphology via AI...</span>
+    </div>
+
+    <!-- ANALYSE BUTTON -->
+    <button class="btn-analyze" id="analyseBtn" disabled onclick="runAnalysis()">◈ &nbsp; Analyse Body Shape</button>
+
+    <!-- RESULT -->
+    <div id="result">
+
+      <!-- Header: shape + confidence -->
+      <div class="res-header">
+        <div class="res-emoji" id="res-emoji">🔍</div>
+        <div class="res-title-block">
+          <div class="res-tag">◈ Body Shape Classification</div>
+          <div class="res-shape-name" id="res-shape-name">—</div>
+        </div>
+        <div style="text-align:right; flex-shrink:0;">
+          <div class="res-confidence-badge" id="res-confidence">—%</div>
+          <div class="res-confidence-label">Confidence</div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="res-desc-block">
+        <p class="res-desc" id="res-desc"></p>
+      </div>
+
+      <!-- Proportion indicators -->
+      <div class="res-section">
+        <div class="res-section-title">Proportion Profile</div>
+        <div class="prop-row">
+          <div class="prop-top"><span class="prop-name">Shoulders</span><span class="prop-val" id="pr-shoulders">—</span></div>
+          <div class="prop-track"><div class="prop-fill" id="pb-shoulders"></div></div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-top"><span class="prop-name">Bust / Chest</span><span class="prop-val" id="pr-bust">—</span></div>
+          <div class="prop-track"><div class="prop-fill" id="pb-bust"></div></div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-top"><span class="prop-name">Waist</span><span class="prop-val" id="pr-waist">—</span></div>
+          <div class="prop-track"><div class="prop-fill" id="pb-waist"></div></div>
+        </div>
+        <div class="prop-row">
+          <div class="prop-top"><span class="prop-name">Hips</span><span class="prop-val" id="pr-hips">—</span></div>
+          <div class="prop-track"><div class="prop-fill" id="pb-hips"></div></div>
+        </div>
+      </div>
+
+      <!-- Key traits -->
+      <div class="res-section">
+        <div class="res-section-title">Key Characteristics</div>
+        <div class="traits-grid" id="traits-grid"></div>
+      </div>
+
+      <!-- Style tips -->
+      <div class="res-section">
+        <div class="res-section-title">Style Intelligence</div>
+        <div class="style-list" id="style-list"></div>
+      </div>
+
+      <!-- Wear / Avoid -->
+      <div class="res-section">
+        <div class="res-section-title">Wardrobe Direction</div>
+        <div class="wear-grid">
+          <div>
+            <div class="wear-col-head wear"><span>✓</span> Wear</div>
+            <div id="wear-list"></div>
+          </div>
+          <div>
+            <div class="wear-col-head avoid"><span>✕</span> Avoid</div>
+            <div id="avoid-list"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <a href="demo.html" class="back-link" style="margin-top:24px;">Back to Home</a>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat-item reveal">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Measurements Required</div>
+  </div>
+  <div class="stat-item reveal reveal-d1">
+    <div class="stat-num">2s</div>
+    <div class="stat-label">Result Delivery</div>
+  </div>
+  <div class="stat-item reveal reveal-d2">
+    <div class="stat-num">10+</div>
+    <div class="stat-label">Recognised Archetypes</div>
+  </div>
+  <div class="stat-item reveal reveal-d3">
+    <div class="stat-num">97%</div>
+    <div class="stat-label">Vision Accuracy</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-left">
+    <div class="ns-tag">Behind the Lens</div>
+    <h2 class="ns-heading">Vision that<br><em>reads between</em><br>the lines.</h2>
+    <p class="ns-text">
+      A photograph captures what a tape measure cannot — the complete picture. Our model identifies your key skeletal reference points in a single pass, translating light and shadow into a precise morphological signature without you lifting a finger.
+    </p>
+  </div>
+  <div class="how-right">
+    <div class="step-row reveal">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Choose Your Photo</div>
+        <p class="step-desc">Select a recent full-body image — ideally lit, front-facing, with arms slightly away from the torso. Fitted clothing helps the model read proportions more clearly. No studio required.</p>
+      </div>
+    </div>
+    <div class="step-row reveal reveal-d1">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Vision Engine Maps Your Form</div>
+        <p class="step-desc">Our AI locates the four key anatomical landmarks — shoulder line, chest, natural waist and hip crest — then calculates the differential ratios that define your unique silhouette profile.</p>
+      </div>
+    </div>
+    <div class="step-row reveal reveal-d2">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Receive a Precise Classification</div>
+        <p class="step-desc">Your silhouette is matched to the closest archetype from our library of ten body shape categories. You receive the classification name plus an explanation of the specific proportional cues that determined your result.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sec-div reveal"><span>◈ Silhouette Archetype Library</span></div>
+
+<!-- SHAPES REFERENCE -->
+<section class="shapes-section" id="shapes">
+  <div class="shapes-header reveal">
+    <div class="ns-tag">The Archetype Library</div>
+    <h2 class="ns-heading">Ten silhouettes.<br><em>One is yours.</em></h2>
+    <p class="ns-text" style="margin-top:16px;">Each archetype represents a distinct pattern of proportional relationships. Browse them before you analyse — recognition makes results easier to interpret.</p>
+    <div class="shape-tabs">
+      <button class="shape-tab active" id="tab-female" onclick="switchTab('female')">Female</button>
+      <button class="shape-tab" id="tab-male" onclick="switchTab('male')">Male</button>
+    </div>
+  </div>
+
+  <!-- FEMALE GRID -->
+  <div class="shapes-grid" id="grid-female">
+    <div class="shape-cell reveal">
+      <span class="sc-num">01 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M14 3C9 3 7 8 7 14C7 20 9 22 9 33C9 42 11 53 18 53C25 53 27 42 27 33C27 22 29 20 29 14C29 8 27 3 22 3C20 3 18 4 18 4C18 4 16 3 14 3Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+      </svg>
+      <span class="sc-name">Pear</span>
+      <p class="sc-desc">Lower half leads — hips carry the frame's widest point</p>
+    </div>
+    <div class="shape-cell reveal reveal-d1">
+      <span class="sc-num">02 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M5 2L31 2L33 14L20 22L33 34L31 54L5 54L3 34L16 22L3 14Z" stroke="#D4A5A0" stroke-width="0.8" fill="rgba(212,165,160,0.08)"/>
+      </svg>
+      <span class="sc-name">Hourglass</span>
+      <p class="sc-desc">Mirror symmetry — bust and hips echo each other across a narrow waist</p>
+    </div>
+    <div class="shape-cell reveal reveal-d2">
+      <span class="sc-num">03 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M1 2L35 2L22 54L14 54Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+      </svg>
+      <span class="sc-name">Inv. Triangle</span>
+      <p class="sc-desc">Upper frame dominates — strength and breadth above the waist</p>
+    </div>
+    <div class="shape-cell reveal reveal-d2">
+      <span class="sc-num">04 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <rect x="7" y="2" width="22" height="52" rx="2" stroke="#8A8278" stroke-width="0.8" fill="rgba(138,130,120,0.08)"/>
+      </svg>
+      <span class="sc-name">Rectangle</span>
+      <p class="sc-desc">Clean vertical line — shoulders, waist and hips hold a steady width</p>
+    </div>
+    <div class="shape-cell reveal reveal-d3">
+      <span class="sc-num">05 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <ellipse cx="18" cy="30" rx="14" ry="24" stroke="#D4A5A0" stroke-width="0.8" fill="rgba(212,165,160,0.08)"/>
+      </svg>
+      <span class="sc-name">Apple</span>
+      <p class="sc-desc">Centre of gravity — fullness concentrates at the midsection</p>
+    </div>
+  </div>
+
+  <!-- MALE GRID -->
+  <div class="shapes-grid" id="grid-male" style="display:none;">
+    <div class="shape-cell reveal">
+      <span class="sc-num">01 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M3 6L33 6L27 50L9 50Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+      </svg>
+      <span class="sc-name">Trapezoid</span>
+      <p class="sc-desc">Power at the top — chest and shoulders taper steadily downward</p>
+    </div>
+    <div class="shape-cell reveal reveal-d1">
+      <span class="sc-num">02 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M12 6L24 6L33 50L3 50Z" stroke="#D4A5A0" stroke-width="0.8" fill="rgba(212,165,160,0.08)"/>
+      </svg>
+      <span class="sc-name">Triangle</span>
+      <p class="sc-desc">Base carries the width — midsection broader than shoulders</p>
+    </div>
+    <div class="shape-cell reveal reveal-d2">
+      <span class="sc-num">03 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <ellipse cx="18" cy="28" rx="15" ry="22" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+      </svg>
+      <span class="sc-name">Oval</span>
+      <p class="sc-desc">Soft centre — the abdomen sets the widest circumference</p>
+    </div>
+    <div class="shape-cell reveal reveal-d2">
+      <span class="sc-num">04 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <rect x="7" y="3" width="22" height="50" rx="3" stroke="#8A8278" stroke-width="0.8" fill="rgba(138,130,120,0.08)"/>
+      </svg>
+      <span class="sc-name">Rectangle</span>
+      <p class="sc-desc">Even column — chest, waist and hips share the same measured width</p>
+    </div>
+    <div class="shape-cell reveal reveal-d3">
+      <span class="sc-num">05 —</span>
+      <svg viewBox="0 0 36 56" fill="none">
+        <path d="M1 4L35 4L22 53L14 53Z" stroke="#C4A96B" stroke-width="0.8" fill="rgba(196,169,107,0.08)"/>
+      </svg>
+      <span class="sc-name">Athletic / V</span>
+      <p class="sc-desc">Sculpted taper — wide shoulders cut sharply to a narrow waist</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section reveal">
+  <div class="quote-portrait">✦</div>
+  <div class="quote-content">
+    <blockquote>
+      The camera does not lie about proportion — it simply translates the three-dimensional truth of your form into a language that intelligence can finally read.
+    </blockquote>
+    <div class="quote-attr">Vogue Vista · Vision Intelligence Series</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="demo.html" class="footer-logo">VOGUE VISTA</a>
+  <ul class="footer-links">
+    <li><a href="#">Privacy Policy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">API Docs</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <span class="footer-copy">© VV 2025</span>
+</footer>
+
+<script>
+  /* ── Cursor ── */
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; cursor.style.left=mx-4+'px'; cursor.style.top=my-4+'px'; });
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  (function tick(){ rx=lerp(rx,mx,0.12); ry=lerp(ry,my,0.12); ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tick); })();
+  document.querySelectorAll('a,button,select,.shape-tab,.upload-zone').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ ring.style.width='56px'; ring.style.height='56px'; ring.style.borderColor='rgba(196,169,107,0.9)'; });
+    el.addEventListener('mouseleave',()=>{ ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(196,169,107,0.5)'; });
+  });
+
+  /* ── Progress bar ── */
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', ()=>{ bar.style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%'; });
+
+  /* ── Scroll reveal ── */
+  const obs = new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  /* ── Shape tab toggle ── */
+  function switchTab(t){
+    const gf=document.getElementById('grid-female'), gm=document.getElementById('grid-male');
+    const tf=document.getElementById('tab-female'),  tm=document.getElementById('tab-male');
+    if(t==='female'){ gf.style.display=''; gm.style.display='none'; tf.classList.add('active'); tm.classList.remove('active'); }
+    else            { gm.style.display=''; gf.style.display='none'; tm.classList.add('active'); tf.classList.remove('active'); }
+  }
+
+  /* ── Gender toggle ── */
+  let selectedGender = 'female';
+  function setGender(g){
+    selectedGender = g;
+    document.getElementById('btn-female').classList.toggle('active', g==='female');
+    document.getElementById('btn-male').classList.toggle('active',   g==='male');
+  }
+
+  /* ── File upload ── */
+  const uploadZone = document.getElementById('uploadZone');
+  const fileInput  = document.getElementById('fileInput');
+  const previewBox = document.getElementById('previewBox');
+  const previewImg = document.getElementById('previewImg');
+  const previewName= document.getElementById('previewName');
+  const analyseBtn = document.getElementById('analyseBtn');
+
+  let uploadedFile = null;
+  let base64Data   = null;
+  let mimeType     = null;
+
+  uploadZone.addEventListener('click', ()=>fileInput.click());
+  uploadZone.addEventListener('dragover', e=>{ e.preventDefault(); uploadZone.classList.add('dragover'); });
+  uploadZone.addEventListener('dragleave', ()=>uploadZone.classList.remove('dragover'));
+  uploadZone.addEventListener('drop', e=>{ e.preventDefault(); uploadZone.classList.remove('dragover'); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) handleFile(f); });
+  fileInput.addEventListener('change', ()=>{ if(fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+  function handleFile(file){
+    uploadedFile = file;
+    mimeType = file.type;
+    const reader = new FileReader();
+    reader.onload = e=>{
+      base64Data = e.target.result.split(',')[1];
+      previewImg.src = e.target.result;
+      previewName.textContent = file.name;
+      previewBox.style.display = 'block';
+      analyseBtn.disabled = false;
+      document.getElementById('result').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ── AI Analysis ── */
+  async function runAnalysis(){
+    if(!base64Data) return;
+
+    analyseBtn.disabled = true;
+    document.getElementById('loadingRow').classList.add('show');
+    document.getElementById('result').style.display = 'none';
+
+    const prompt = `You are an elite body shape analyst and personal stylist with deep expertise in fashion, anthropometry and body proportions.
+The user selected gender: ${selectedGender}.
+
+Carefully study the full-body proportions visible in this photo. Analyse the relative widths and volumes of the shoulder line, bust/chest, natural waist, and hips.
+
+For Female, classify as one of: Pear Shape, Hourglass Shape, Inverted Triangle, Rectangle Shape, Apple Shape.
+For Male, classify as one of: Trapezoid, Athletic / V Shape, Rectangle / Straight Shape, Triangle, Oval Shape.
+
+Respond ONLY in valid JSON (no markdown, no text outside the object):
+{
+  "shape": "<shape name>",
+  "emoji": "<single emoji>",
+  "confidence": <integer 72-97>,
+  "description": "<2 sentences describing the visible proportional cues that led to this classification>",
+  "proportions": {
+    "shoulders": { "label": "<Narrow|Moderate|Broad|Very Broad>", "pct": <integer 30-95> },
+    "bust":      { "label": "<Narrow|Moderate|Full|Very Full>",   "pct": <integer 30-95> },
+    "waist":     { "label": "<Very Narrow|Narrow|Moderate|Full>", "pct": <integer 20-85> },
+    "hips":      { "label": "<Narrow|Moderate|Full|Very Full>",   "pct": <integer 30-95> }
+  },
+  "traits": ["<trait 1>", "<trait 2>", "<trait 3>", "<trait 4>", "<trait 5>", "<trait 6>"],
+  "styleTips": [
+    { "tip": "<specific styling insight for this shape>" },
+    { "tip": "<another actionable tip>" },
+    { "tip": "<third tip>" }
+  ],
+  "wear": ["<item/style 1>", "<item/style 2>", "<item/style 3>", "<item/style 4>"],
+  "avoid": ["<item/style 1>", "<item/style 2>", "<item/style 3>", "<item/style 4>"]
+}`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64Data } },
+              { type: 'text', text: prompt }
+            ]
+          }]
+        })
+      });
+
+      const data = await response.json();
+      const raw  = data.content.map(b => b.text || '').join('');
+
+      let p;
+      try {
+        p = JSON.parse(raw.replace(/```json|```/g, '').trim());
+      } catch {
+        p = {
+          shape: 'Unable to Classify', emoji: '🔍', confidence: 0,
+          description: 'Please upload a clear, well-lit, front-facing full-body photo against a plain background for accurate analysis.',
+          proportions: { shoulders:{label:'—',pct:50}, bust:{label:'—',pct:50}, waist:{label:'—',pct:50}, hips:{label:'—',pct:50} },
+          traits: ['Clear image required','Good lighting needed','Plain background ideal','Front-facing pose','Full body in frame','Fitted clothing preferred'],
+          styleTips: [{tip:'Upload a clearer photo for personalised style recommendations.'},{tip:'Ensure your full body from head to toe is visible.'},{tip:'Avoid baggy clothing that hides your natural proportions.'}],
+          wear: ['Well-lit photo','Front-facing pose','Fitted clothing','Plain background'],
+          avoid: ['Blurry images','Cropped photos','Heavy outerwear','Group photos']
+        };
+      }
+
+      /* ── Populate header ── */
+      document.getElementById('res-emoji').textContent       = p.emoji  || '🔍';
+      document.getElementById('res-shape-name').textContent  = p.shape  || '—';
+      document.getElementById('res-confidence').textContent  = p.confidence ? p.confidence + '%' : '—%';
+      document.getElementById('res-desc').textContent        = p.description || '';
+
+      /* ── Proportion bars (animate after paint) ── */
+      const pr = p.proportions || {};
+      const parts = ['shoulders','bust','waist','hips'];
+      parts.forEach(k => {
+        const obj = pr[k] || { label:'—', pct:50 };
+        document.getElementById('pr-'+k).textContent = obj.label;
+        const bar = document.getElementById('pb-'+k);
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = Math.min(95, Math.max(10, obj.pct)) + '%'; }, 100);
+      });
+
+      /* ── Traits ── */
+      const tGrid = document.getElementById('traits-grid');
+      tGrid.innerHTML = '';
+      (p.traits || []).forEach(t => {
+        tGrid.innerHTML += `<div class="trait-chip"><div class="trait-dot"></div><span class="trait-txt">${t}</span></div>`;
+      });
+
+      /* ── Style tips ── */
+      const sList = document.getElementById('style-list');
+      sList.innerHTML = '';
+      (p.styleTips || []).forEach((s, i) => {
+        const icons = ['◈','◇','◉'];
+        sList.innerHTML += `<div class="style-item"><span class="style-icon" style="color:var(--gold);font-family:serif;">${icons[i]||'◈'}</span><span class="style-txt">${s.tip}</span></div>`;
+      });
+
+      /* ── Wear / Avoid ── */
+      const wList = document.getElementById('wear-list');
+      const aList = document.getElementById('avoid-list');
+      wList.innerHTML = '';
+      aList.innerHTML = '';
+      (p.wear  || []).forEach(w => { wList.innerHTML  += `<div class="wear-item">${w}</div>`; });
+      (p.avoid || []).forEach(a => { aList.innerHTML  += `<div class="wear-item">${a}</div>`; });
+
+      /* ── Show result ── */
+      const resultEl = document.getElementById('result');
+      resultEl.style.display = 'block';
+      resultEl.style.animation = 'none';
+      requestAnimationFrame(() => { resultEl.style.animation = ''; });
+      setTimeout(() => resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+
+    } catch(err) {
+      document.getElementById('res-shape-name').textContent = 'Connection Error';
+      document.getElementById('res-desc').textContent = 'Could not reach the analysis service. Please check your connection and try again.';
+      document.getElementById('res-confidence').textContent = '—%';
+      document.getElementById('result').style.display = 'block';
+    } finally {
+      document.getElementById('loadingRow').classList.remove('show');
+      analyseBtn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
