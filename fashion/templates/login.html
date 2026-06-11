@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous"
+    referrerpolicy="no-referrer"/>
+    <title>Login Page</title>
+</head>
+<body>
+    <section class="nav-bar">
+        <nav>
+            <a href="#" class="nav-logo">VOUGE <br> VISTA</a>
+            <div class="middle">
+                <div class="referrals">
+                    <p>Home</p>
+                    <p>Blog</p>
+                    <p>About Us</p>
+                    <p>Contact</p>
+                </div>
+            </div>
+            <div class="right">
+                <input type="text" class="search-bar" placeholder="   Search...">
+                <select name="languages" id="drop-down">
+                    <option value="">Select Language</option>
+                    <option value="">English (United States)</option>
+                    <option value="">Hindi</option>
+                    <option value="">Marathi</option>
+                    <option value="">Gujarati</option>
+                    <option value="">Tamil</option>
+                </select>
+            </div>
+        </nav>
+    </section>
+    <main>
+        <div class="left-main">
+            <video src="{% static 'Login1.mp4' %}" autoplay muted loop></video>
+        </div>
+        <div class="right-main">
+            <div class="container">
+                <h3>Log in</h3>
+                <p>Log in to access your account</p>
+                {% if error %}
+                <p style="color:red">{{ error }}</p>
+                {% endif %}
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="username">
+                        <p>Username</p>
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+
+                    <div class="password">
+                        <p>Password</p>
+                        <input type="password" name="password" placeholder="Password" required>
+                        <p class="warning">
+                            Forgot your password? 
+                            <a href="{% url 'reset' %}">Reset it</a>
+                        </p>
+                    </div>
+
+                    <div class="terms">
+                       <button type="submit" class="button">Log in</button>
+                        <p class="question">
+                            Don't have an account? 
+                            <a href="{% url 'signup' %}">Sign up</a>
+                        </p>
+                    </div>
+                </form>
+                <div class="divider"></div>
+                <div class="social-login">
+                    <button class="social-button google"><i class="fa-brands fa-google"></i> Log in with Google</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

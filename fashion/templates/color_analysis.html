@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vogue Vista — AI Skin Colour Analyser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'index.css' %}">
+</head>
+<body>
+
+<!-- NAV — logo only -->
+<nav>
+  <a href="#" class="logo">Vogue Vista</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="divider"></div>
+
+  <!-- LEFT -->
+  <div class="hero-left">
+    <div class="eyebrow">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">AI Skin Colour Analyser</span>
+    </div>
+
+    <h1 class="hero-headline">
+      <span class="headline-line">Colours That</span>
+      <span class="headline-line"><em class="highlight">Make You</em></span>
+      <span class="headline-line">Glow.</span>
+    </h1>
+
+    <p class="hero-body">
+      Discover which shades make you look like you slept 8 hours —
+      and which to leave on the rack forever. Powered by AI, backed by colour science.
+    </p>
+
+    <div class="cta-group">
+      <label class="btn-card" style="cursor:pointer;" onclick="goToPreviousPage()" >
+        <input type="file" accept="image/*" style="display:none;" ">
+        <span class="btn-card-icon">📷</span>
+        <span class="btn-card-title">Upload a Photo</span>
+        <span class="btn-card-desc">AI reads your skin tone directly from your image.</span>
+      </label>
+      <a href="#manual" class="btn-card" style="cursor:pointer;" onclick="goToManualAnalysis()">
+        <span class="btn-card-icon">🔬</span>
+        <span class="btn-card-title">Manual Analysis</span>
+        <span class="btn-card-desc">Answer 3 quick questions about your natural features.</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT — video -->
+  <div class="hero-right">
+    <video autoplay muted loop playsinline style="width:90%;height:80%;object-fit:cover;display:block;opacity:0.92;" >
+      <source src="{% static 'hero-video.mp4' %}" type="video/mp4">
+    </video>
+    <!-- <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(14,13,11,0.55) 0%,transparent 30%,transparent 70%,rgba(14,13,11,0.3) 100%),linear-gradient(to bottom,rgba(14,13,11,0.2) 0%,transparent 20%,transparent 80%,rgba(14,13,11,0.5) 100%);pointer-events:none;"></div> -->
+  </div>
+
+</section>
+
+
+
+<script>
+
+function goToPreviousPage() {
+  window.location.href = "{% url 'pic' %}"; // Replace with your actual HTML file name
+}
+function goToManualAnalysis(){
+  window.location.href = "{% url 'manual' %}"; // Replace with your actual HTML file name
+}
+
+function handleUpload(input) {
+  if (!input.files || !input.files[0]) return;
+  const url = URL.createObjectURL(input.files[0]);
+  const right = document.querySelector('.hero-right');
+  right.innerHTML = `
+    <img src="${url}" alt="Your photo" style="width:100%;height:100%;object-fit:cover;display:block;opacity:0.93;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(14,13,11,0.5) 0%,transparent 30%,transparent 70%,rgba(14,13,11,0.25) 100%),linear-gradient(to bottom,rgba(14,13,11,0.15) 0%,transparent 20%,transparent 80%,rgba(14,13,11,0.45) 100%);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(14,13,11,0.75);border:0.5px solid rgba(201,169,110,0.35);padding:10px 24px;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#C9A96E;white-space:nowrap;">Analysing…</div>
+  `;
+}
+</script>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-stat">
+    <span class="footer-stat-number">3</span>
+    <span class="footer-stat-label">Undertone Types</span>
+  </div>
+  <div class="footer-stat">
+    <span class="footer-stat-number">60+</span>
+    <span class="footer-stat-label">Curated Shades</span>
+  </div>
+  <div class="footer-stat">
+    <span class="footer-stat-number">AI</span>
+    <span class="footer-stat-label">Powered Precision</span>
+  </div>
+</footer>
+</body>
+</html>

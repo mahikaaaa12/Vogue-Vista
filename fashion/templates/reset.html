@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+        <title>Reset Password</title>
+        <style>
+            body {
+                font-family: 'DM Sans', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f5f5f5;
+            }
+            .nav-bar {
+                background-color: #333;
+                color: white;
+                padding: 10px 20px;
+            }
+            .nav-logo {
+                font-size: 24px;
+                font-weight: bold;
+                text-decoration: none;
+                color: white;
+            }
+            .middle .referrals p {
+                display: inline-block;
+                margin: 0 15px;
+                cursor: pointer;
+            }
+            .right {
+                float: right;
+            }
+            .search-bar {
+                padding: 5px;
+                border-radius: 4px;
+                border: none;
+            }
+            #drop-down {
+                padding: 5px;
+                border-radius: 4px;
+                border: none;
+            }
+            main {
+                display: flex;
+                height: calc(100vh - 60px);
+            }
+            .left-main video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .right-main {
+                background-color: white;
+                width: 40%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .container {
+                width: 80%;
+            }
+        </style>
+    </head>
+    <body>
+        <section class="nav-bar">
+            <nav>
+                <a href="#" class="nav-logo">VOUGE <br> VISTA</a>
+                <div class="middle">
+                    <div class="referrals">
+                        <p>Home</p>
+                        <p>Blog</p>
+                        <p>About Us</p>
+                        <p>Contact</p>
+                    </div>
+                </div>
+                <div class="right">
+                    <input type="text" class="search-bar" placeholder="   Search...">
+                    <select name="languages" id="drop-down">
+                        <option value="">Select Language</option>
+                        <option value="">English (United States)</option>
+                        <option value="">Hindi</option>
+                        <option value="">Marathi</option>
+                        <option value="">Gujarati</option>
+                        <option value="">Tamil</option>
+                    </select>
+                </div>
+            </nav>
+        </section>
+
+        <main>
+            <div class="left-main">
+                <video src="{% static 'Login1.mp4' %}" autoplay muted loop></video>
+            </div>
+
+            <div class="right-main">
+                <div class="container">
+                    <h3>Reset Password</h3>
+                    {% if error %}
+                    <p style="color:red">{{ error }}</p>
+                    {% endif %}
+                    {% if success_message %}
+                    <p style="color:green">{{ success_message }}</p>
+                    {% endif %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="email">
+                            <p>Email Address</p>
+                            <input type="email" name="email" placeholder="Enter your email address" required>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

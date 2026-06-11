@@ -1,0 +1,956 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vogue Vista — Manual Skin Telemetry</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Cormorant Garamond & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="{% static 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@200;300;400;500;600;700&display=swap' %}" rel="stylesheet">
+  
+  <!-- Lucide Icons Library -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind Custom Palette Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#131110',
+            brandCard: '#181615',
+            brandLinen: '#edeae4',
+            brandGold: '#c5a880',
+            brandBorder: '#2a2520',
+            brandMuted: '#b5afa2',
+          },
+          fontFamily: {
+            cormorant: ['"Cormorant Garamond"', 'serif'],
+            inter: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Premium Custom Styling for Animations & Visual Overrides -->
+  <style>
+    body {
+      background: radial-gradient(circle at 100% 40%, #1e1916 0%, #131110 75%);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Transition Animations for Page View Sweeps */
+    .fade-in {
+      animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .option-selected {
+      border-color: #c5a880 !important;
+      background-color: rgba(197, 168, 128, 0.05) !important;
+      box-shadow: 0 0 15px rgba(197, 168, 128, 0.1);
+    }
+    
+    .step-line-active {
+      background-color: #c5a880 !important;
+    }
+    
+    .step-circle-active {
+      border-color: #c5a880 !important;
+      color: #c5a880 !important;
+      background-color: rgba(197, 168, 128, 0.1) !important;
+    }
+    
+    .step-circle-completed {
+      border-color: #c5a880 !important;
+      color: #131110 !important;
+      background-color: #c5a880 !important;
+    }
+
+    /* Custom Scrollbar for Luxury Aesthetic */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #131110;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2a2520;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #c5a880;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-brandLinen flex flex-col justify-between selection:bg-brandGold selection:text-black relative overflow-x-hidden">
+
+  <!-- Absolute Ambient Glow Orbs -->
+  <div class="absolute top-0 left-1/4 w-[40%] h-[40%] rounded-full bg-brandGold/5 blur-[130px] pointer-events-none"></div>
+  <div class="absolute bottom-10 right-10 w-[35%] h-[35%] rounded-full bg-brandGold/4 blur-[120px] pointer-events-none"></div>
+
+  <!-- Premium Header -->
+  <header class="max-w-7xl mx-auto w-full px-8 py-8 flex justify-between items-center relative z-20">
+    <div onclick="resetQuiz()" class="font-cormorant text-2xl tracking-[0.2em] font-light cursor-pointer hover:text-brandGold transition-all duration-300">
+      Vogue Vista
+    </div>
+    <div class="flex items-center gap-4 text-[10px] tracking-[0.3em] uppercase text-brandMuted">
+      <span>Manual Telemetry Lab</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-brandGold animate-pulse"></span>
+    </div>
+  </header>
+
+  <!-- Main Workstation Canvas -->
+  <main class="max-w-7xl mx-auto w-full px-6 py-6 md:py-12 flex-grow flex flex-col items-stretch justify-start relative z-10">
+    
+    <!-- ================= STAGE 1: QUESTIONNAIRE INTERFACE ================= -->
+    <div id="captureStage" class="w-full flex flex-col items-center fade-in">
+      
+      <!-- Quiet Navigation Return Link -->
+      <div class="w-full max-w-4xl px-4 mb-6 flex justify-start">
+        <button onclick="goToPreviousPage()" class="group flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-brandMuted hover:text-brandLinen transition-colors duration-300 py-2">
+          <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-1"></i>
+          <span>Back</span>
+        </button>
+      </div>
+
+      <!-- Main Headline Block -->
+      <div class="text-center space-y-4 max-w-2xl mx-auto mb-10">
+        <span class="text-brandGold text-xs font-semibold tracking-[0.3em] uppercase block">Colour Science Analysis</span>
+        <h1 class="font-cormorant text-4xl sm:text-5xl md:text-6xl tracking-wide font-light leading-tight">
+          The Five-Signal Undertone Method
+        </h1>
+        <p class="text-xs sm:text-sm text-brandMuted font-light leading-relaxed max-w-xl mx-auto">
+          Each question reveals a unique biological signal. Together, they paint your complete colour portrait.
+        </p>
+      </div>
+
+      <!-- Horizontal Step Stepper Track -->
+      <div class="w-full max-w-xl flex items-center justify-between mb-12 relative px-4">
+        <!-- Connecting Line Tracks -->
+        <div class="absolute top-1/2 left-6 right-6 h-[1px] bg-brandBorder -translate-y-1/2 z-0">
+          <div id="stepperProgressBar" class="h-full w-0 bg-brandGold transition-all duration-500"></div>
+        </div>
+        
+        <!-- Steps Circles -->
+        <div id="stepIndicator1" class="w-9 h-9 rounded-full border border-brandBorder bg-brandDark z-10 flex items-center justify-center font-cormorant text-sm text-brandMuted step-circle-active transition-all duration-300">1</div>
+        <div id="stepIndicator2" class="w-9 h-9 rounded-full border border-brandBorder bg-brandDark z-10 flex items-center justify-center font-cormorant text-sm text-brandMuted transition-all duration-300">2</div>
+        <div id="stepIndicator3" class="w-9 h-9 rounded-full border border-brandBorder bg-brandDark z-10 flex items-center justify-center font-cormorant text-sm text-brandMuted transition-all duration-300">3</div>
+        <div id="stepIndicator4" class="w-9 h-9 rounded-full border border-brandBorder bg-brandDark z-10 flex items-center justify-center font-cormorant text-sm text-brandMuted transition-all duration-300">4</div>
+        <div id="stepIndicator5" class="w-9 h-9 rounded-full border border-brandBorder bg-brandDark z-10 flex items-center justify-center font-cormorant text-sm text-brandMuted transition-all duration-300">5</div>
+      </div>
+
+      <!-- Questionnaire Content Display Container -->
+      <div class="w-full max-w-3xl bg-brandCard border border-brandBorder rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative min-h-[400px] flex flex-col justify-between">
+        
+        <!-- QUESTION CONTENT DISPATCH BLOCKS -->
+        <div id="questionContainer">
+          
+          <!-- Q1: Vein Color Test -->
+          <div id="questionBlock1" class="space-y-6">
+            <span class="text-brandGold text-[10px] uppercase font-mono tracking-widest block">Question 01 of 05 — Vein Colour Test</span>
+            <h2 class="font-cormorant text-2xl sm:text-3xl font-light">What colour do the veins on your wrist appear?</h2>
+            
+            <div class="bg-brandDark/50 rounded-2xl p-4 border border-brandBorder/40 space-y-4">
+              <span class="text-[9px] uppercase tracking-widest text-brandGold font-medium block text-center">Wrist Vein Chromatic Reference</span>
+              <div class="w-full overflow-hidden rounded-xl border border-brandBorder/60 bg-[#131110]/60 p-1">
+                <img src="{% static 'veincolor.png' %}" alt="Wrist Vein Comparison Guide" class="w-full h-auto object-cover opacity-90 rounded-lg hover:opacity-100 transition-opacity duration-300" onerror="console.warn('Image reference failed to render path. Check local assets folder.')">
+              </div>
+
+              <div class="grid grid-cols-3 gap-3 text-center pt-2">
+                <div class="space-y-1">
+                  <span class="text-[10px] text-brandLinen font-semibold uppercase block">Cool</span>
+                  <p class="text-[9px] text-brandMuted font-light">Blue or Purple Veins</p>
+                </div>
+                <div class="space-y-1 border-x border-brandBorder/40">
+                  <span class="text-[10px] text-brandLinen font-semibold uppercase block">Neutral</span>
+                  <p class="text-[9px] text-brandMuted font-light">Blue / Green Mix</p>
+                </div>
+                <div class="space-y-1">
+                  <span class="text-[10px] text-brandLinen font-semibold uppercase block">Warm</span>
+                  <p class="text-[9px] text-brandMuted font-light">Green or Olive Veins</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 pt-2">
+              <div onclick="recordAnswer('skin', 'cool', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-4 sm:p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">A. Blue or purple tones</span>
+              </div>
+              <div onclick="recordAnswer('skin', 'warm', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-4 sm:p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">B. Green or olive tones</span>
+              </div>
+              <div onclick="recordAnswer('skin', 'neutral', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-4 sm:p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">C. A mix of blue and green (greenish)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q2: Sun Reaction Test -->
+          <div id="questionBlock2" class="space-y-6 hidden">
+            <span class="text-brandGold text-[10px] uppercase font-mono tracking-widest block">Question 02 of 05 — Melanin Kinetics</span>
+            <h2 class="font-cormorant text-2xl sm:text-3xl font-light">What happens when you stay in the sun without sunscreen?</h2>
+            <div class="grid grid-cols-1 gap-3">
+              <div onclick="recordAnswer('sun', 'cool', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">A. Burn easily, then experience minimal to zero tanning</span>
+              </div>
+              <div onclick="recordAnswer('sun', 'warm', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">B. Tan easily and rarely experience surface burning</span>
+              </div>
+              <div onclick="recordAnswer('sun', 'neutral', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">C. Hybrid reaction — sometimes burn, sometimes tan</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q3: Natural Hair Color -->
+          <div id="questionBlock3" class="space-y-6 hidden">
+            <span class="text-brandGold text-[10px] uppercase font-mono tracking-widest block">Question 03 of 05 — Crown Pigment Matrix</span>
+            <h2 class="font-cormorant text-2xl sm:text-3xl font-light">Which group best matches your natural hair colour?</h2>
+            
+            <!-- <div class="bg-brandDark/50 rounded-2xl p-4 border border-brandBorder/40 space-y-3">
+              <span class="text-[9px] uppercase tracking-widest text-brandGold font-medium block text-center">Hair Color Spectrum Chart Reference</span>
+              <div class="grid grid-cols-4 gap-2 text-center text-[9px] text-brandMuted">
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#0a0a0a] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">1. Black</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#1c120c] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">2. Dark Brown</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#3d2719] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">3. Brown</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#5e3c23] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">4. Light Brown</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#d0a75c] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">5. Blonde</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#f1ebd9] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">6. Platinum Blonde</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#a1401f] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">7. Red</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#520f21] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">8. Burgundy</p>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="grid grid-cols-1 gap-3">
+              <div onclick="recordAnswer('hair', 'cool', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">A. Black, Dark Brown, Burgundy</span>
+              </div>
+              <div onclick="recordAnswer('hair', 'warm', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">B. Brown, Light Brown, Red / Auburn</span>
+              </div>
+              <div onclick="recordAnswer('hair', 'cool-2', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">C. Blonde, Platinum Blonde</span>
+              </div>
+              <div onclick="recordAnswer('hair', 'neutral', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">D. Mixed / Unsure</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q4: Natural Eye Color -->
+          <div id="questionBlock4" class="space-y-6 hidden">
+            <span class="text-brandGold text-[10px] uppercase font-mono tracking-widest block">Question 04 of 05 — Iris Reflection Frame</span>
+            <h2 class="font-cormorant text-2xl sm:text-3xl font-light">Which group best matches your natural eye colour?</h2>
+<!--             
+            <div class="bg-brandDark/50 rounded-2xl p-4 border border-brandBorder/40 space-y-3">
+              <span class="text-[9px] uppercase tracking-widest text-brandGold font-medium block text-center">Eye Color Spectrum Chart Reference</span>
+              <div class="grid grid-cols-4 gap-2 text-center text-[9px] text-brandMuted">
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#402a1d] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">1. Brown</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#4a72a1] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">2. Blue</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#8f804e] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">3. Hazel</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#527e5a] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">4. Green</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#707e8a] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">5. Gray</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#826743] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">6. Light Brown</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#111111] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">7. Black</p>
+                </div>
+                <div>
+                  <span class="w-4 h-4 rounded-full bg-[#a37c35] border border-white/15 inline-block mb-1"></span>
+                  <p class="font-semibold text-brandLinen">8. Amber</p>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="grid grid-cols-1 gap-3">
+              <div onclick="recordAnswer('eyes', 'cool', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">A. Blue, Gray</span>
+              </div>
+              <div onclick="recordAnswer('eyes', 'warm', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">B. Brown, Light Brown, Amber</span>
+              </div>
+              <div onclick="recordAnswer('eyes', 'neutral-warm', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">C. Hazel, Green</span>
+              </div>
+              <div onclick="recordAnswer('eyes', 'neutral', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">D. Black or Mixed / Unsure</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Q5: Jewellery Preference -->
+          <div id="questionBlock5" class="space-y-6 hidden">
+            <span class="text-brandGold text-[10px] uppercase font-mono tracking-widest block">Question 05 of 05 — Metallurgical Affinity</span>
+            <h2 class="font-cormorant text-2xl sm:text-3xl font-light">Which jewellery metals look best against your bare skin?</h2>
+            <div class="grid grid-cols-1 gap-3">
+              <div onclick="recordAnswer('jewel', 'cool', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">A. Silver</span>
+              </div>
+              <div onclick="recordAnswer('jewel', 'warm', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">B. Gold</span>
+              </div>
+              <div onclick="recordAnswer('jewel', 'warm-2', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">C. Rose Gold</span>
+              </div>
+              <div onclick="recordAnswer('jewel', 'neutral', this)" class="group border border-brandBorder bg-brandDark/30 hover:border-brandGold/40 p-5 rounded-xl transition-all cursor-pointer flex items-center justify-between">
+                <span class="text-sm font-light text-brandMuted group-hover:text-brandLinen transition-colors">D. Silver and Gold both</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="pt-6 border-t border-brandBorder flex items-center justify-between mt-8">
+          <button id="prevBtn" onclick="navigateStep(-1)" class="px-5 py-2 rounded-full border border-brandBorder text-xs uppercase tracking-widest text-brandMuted hover:text-brandLinen disabled:opacity-30 disabled:pointer-events-none transition-all invisible">
+            Back
+          </button>
+          <button id="nextBtn" onclick="navigateStep(1)" disabled class="px-6 py-2 rounded-full bg-brandGold text-black font-semibold text-xs uppercase tracking-widest hover:bg-brandLinen transition-all disabled:opacity-40 disabled:pointer-events-none">
+            Next
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ================= STAGE 2: PREMIUM RESULTS DASHBOARD ================= -->
+    <div id="resultsStage" class="w-full max-w-6xl mx-auto space-y-12 hidden">
+      
+      <div class="w-full flex justify-start">
+        <button onclick="goToPreviousPage()" class="group flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-brandMuted hover:text-brandLinen transition-colors duration-300 py-2">
+          <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-1 flex-shrink-0"></i>
+          <span>Back to home</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-8 items-center justify-between border-b border-brandBorder pb-8">
+        <div class="space-y-2 text-center md:text-left">
+          <span class="text-brandGold text-xs font-semibold tracking-[0.2em] uppercase">Manual Analysis Complete</span>
+          <h2 id="resultsMainTitle" class="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light leading-snug">
+            Your Skin Undertone: <span class="text-brandGold italic font-light">Synthesizing Data...</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-brandMuted">
+            Bespoke tone registration based on mapped melanin metrics and structural traits.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button onclick="resetQuiz()" class="bg-[#1a1816] border border-brandBorder hover:border-brandGold text-brandLinen transition-all px-6 py-3.5 rounded-full flex items-center gap-2 text-xs uppercase tracking-widest font-medium">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Retake Analysis
+          </button>
+        </div>
+      </div>
+
+      <div class="border border-brandGold/30 bg-brandCard/60 rounded-[2rem] p-6 md:p-8 flex items-start gap-4 shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-brandGold/5 rounded-full blur-2xl"></div>
+        <div class="w-12 h-12 rounded-full bg-brandGold/15 flex items-center justify-center shrink-0 border border-brandGold/20">
+          <i data-lucide="sparkles" class="w-6 h-6 text-brandGold animate-pulse"></i>
+        </div>
+        <div class="space-y-2">
+          <span class="text-[9px] uppercase tracking-[0.3em] text-brandGold font-semibold">Runway Telemetry Analysis</span>
+          <p id="cheesyQuoteBox" class="font-cormorant text-xl md:text-2xl font-light italic text-[#edeae4] leading-relaxed">
+            "Your profile matrix rules both ends of the spectrum."
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-4 lg:sticky lg:top-8 self-start">
+          <div class="bg-brandCard rounded-3xl p-8 border border-brandBorder relative overflow-hidden space-y-6 shadow-xl">
+            <div id="dynamicGlowBackdrop" class="absolute inset-0 opacity-10 blur-[80px] pointer-events-none"></div>
+            <div class="relative z-10 space-y-4">
+              <div class="flex items-center gap-2 text-brandGold border-b border-brandBorder/40 pb-4">
+                <i data-lucide="sliders" class="w-5 h-5 text-brandGold"></i>
+                <h4 class="text-xs uppercase tracking-widest font-semibold">Undertone Signature</h4>
+              </div>
+              <div class="space-y-2">
+                <h3 id="resultsUndertoneTitle" class="font-cormorant text-2xl font-light">--</h3>
+                <p id="resultsUndertoneDesc" class="text-xs text-brandMuted leading-relaxed font-light">
+                  --
+                </p>
+              </div>
+              <div class="h-[1px] bg-brandBorder/40 pt-2"></div>
+              <div class="grid grid-cols-2 gap-4 pt-2">
+                <div class="bg-brandDark/40 p-3 rounded-xl border border-brandBorder/60">
+                  <span class="text-[9px] uppercase tracking-wider text-brandMuted block mb-1">Calibrated Hex</span>
+                  <span class="font-mono text-xs uppercase tracking-wider text-brandLinen flex items-center gap-1.5">
+                    <span id="resultsSampledHexCircle" class="w-3 h-3 rounded-full inline-block border border-white/20"></span>
+                    <span id="resultsSampledHexText">#FFFFFF</span>
+                  </span>
+                </div>
+                <div class="bg-brandDark/40 p-3 rounded-xl border border-brandBorder/60">
+                  <span class="text-[9px] uppercase tracking-wider text-brandMuted block mb-1">Seasonal Aura</span>
+                  <span id="resultsSeasonBadge" class="font-cormorant text-sm text-brandGold italic font-semibold">--</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 space-y-12">
+          <div class="space-y-6">
+            <div class="flex items-center gap-3">
+              <i data-lucide="palette" class="w-5 h-5 text-emerald-400"></i>
+              <h3 class="font-cormorant text-3xl font-light">1. Fabulous Colors (Your Gilded Aura)</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-brandMuted leading-relaxed">
+              These specific shades make your skin look flawlessly smooth and radiant, reducing dark circles instantly, and giving you an awake, luxurious look without extra makeup. Click any swatch to copy code.
+            </p>
+            <div id="resultsFabulousGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-brandGold"></i>
+              <h3 class="font-cormorant text-3xl font-light">2. Okay / Universal Colors</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-brandMuted leading-relaxed">
+              Safe, balanced daily staples. These don't hurt your presentation, and they don't help much either—they are neutral, safe bases that work for effortless styling.
+            </p>
+            <div id="resultsUniversalGrid" class="flex flex-wrap gap-4"></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+            <div class="bg-brandCard rounded-3xl p-6 border border-brandBorder space-y-4 shadow-xl relative overflow-hidden flex flex-col justify-between h-full">
+              <div id="metalDynamicGlow" class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+              <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-brandGold/10 flex items-center justify-center border border-brandGold/25">
+                    <i data-lucide="gem" class="w-5 h-5 text-brandGold animate-pulse"></i>
+                  </div>
+                  <h4 class="font-cormorant text-2xl font-light text-brandLinen">Glow Chemistry: Best Metals</h4>
+                </div>
+                <div class="space-y-2">
+                  <h5 id="resultsMetalTitle" class="font-cormorant text-xl text-brandGold italic">--</h5>
+                  <p id="resultsMetalDesc" class="text-xs sm:text-sm text-brandMuted leading-relaxed font-light">--</p>
+                </div>
+              </div>
+              <div id="metalMiniSwatches" class="flex flex-wrap gap-2 pt-4 border-t border-brandBorder/40"></div>
+            </div>
+
+            <div class="bg-brandCard rounded-3xl p-6 border border-brandBorder space-y-4 shadow-xl relative overflow-hidden flex flex-col justify-between h-full">
+              <div id="hairDynamicGlow" class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+              <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-brandGold/10 flex items-center justify-center border border-brandGold/25">
+                    <i data-lucide="scissors" class="w-5 h-5 text-brandGold animate-pulse"></i>
+                  </div>
+                  <h4 class="font-cormorant text-2xl font-light text-brandLinen">Crown Harmony: Hair Colors</h4>
+                </div>
+                <div class="space-y-2">
+                  <h5 id="resultsHairTitle" class="font-cormorant text-xl text-brandGold italic">--</h5>
+                  <p id="resultsHairDesc" class="text-xs sm:text-sm text-brandMuted leading-relaxed font-light">--</p>
+                </div>
+              </div>
+              <div id="hairMiniSwatches" class="flex flex-wrap gap-2 pt-4 border-t border-brandBorder/40"></div>
+            </div>
+          </div>
+
+          <div class="space-y-6 pt-4">
+            <div class="flex items-center gap-3 text-red-400">
+              <i data-lucide="x" class="w-5 h-5"></i>
+              <h3 class="font-cormorant text-3xl font-light text-brandLinen">3. Wrong Colors (Leave on the Rack)</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-brandMuted leading-relaxed">
+              These colors oppose your natural coloring matrix, washing out your healthy tone, casting fake dark shadows under your eyes, and creating dull hair. Avoid these under all premium scenarios.
+            </p>
+            <div id="resultsAvoidGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="calibrationBanner" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-[#1e1c1b] border border-brandGold/30 text-brandLinen px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-50 transition-all duration-500 opacity-0 pointer-events-none">
+      <i data-lucide="sparkles" class="w-5 h-5 text-brandGold shrink-0"></i>
+      <span id="calibrationBannerText" class="text-xs tracking-wider uppercase font-medium">Telemetry stored</span>
+    </div>
+
+  </main>
+
+  <footer class="w-full border-t border-[#24211e] py-10 px-8 text-center text-[11px] text-brandMuted/80 tracking-widest uppercase relative z-10">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      <span>© 2026 Vogue Vista Premium. Color Harmony Lab.</span>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-brandLinen transition-all">Specifications</a>
+        <span>•</span>
+        <a href="#" class="hover:text-brandLinen transition-all">Biometrics Matrix</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navigation Step Engine Variables
+    let currentStep = 1;
+    const totalSteps = 5;
+    
+    // User Choices Telemetry Ledger Object
+    let userResponses = {
+      skin: null,
+      sun: null,
+      hair: null,
+      eyes: null,
+      jewel: null
+    };
+
+    // Placeholder routing fallback for back actions
+    function goToPreviousPage() {
+      window.location.href = "index.htm";
+    }
+
+    // Displays dynamic toast messages
+    function triggerBanner(message) {
+      const banner = document.getElementById('calibrationBanner');
+      const bannerText = document.getElementById('calibrationBannerText');
+      bannerText.textContent = message;
+      banner.classList.remove('opacity-0', 'pointer-events-none');
+      banner.classList.add('opacity-100');
+      setTimeout(() => {
+        banner.classList.remove('opacity-100');
+        banner.classList.add('opacity-0', 'pointer-events-none');
+      }, 4000);
+    }
+
+    // Handles picking choice nodes within blocks
+    function recordAnswer(category, value, element) {
+      userResponses[category] = value;
+      
+      const siblingButtons = element.parentElement.children;
+      for(let btn of siblingButtons) {
+        btn.classList.remove('option-selected');
+      }
+      
+      element.classList.add('option-selected');
+      
+      document.getElementById('nextBtn').removeAttribute('disabled');
+    }
+
+    // Handles Stepper Forward/Backward navigation loops
+    function navigateStep(direction) {
+      document.getElementById(`questionBlock${currentStep}`).classList.add('hidden');
+      
+      currentStep += direction;
+      
+      if (currentStep > totalSteps) {
+        evaluateTraitsMatrix();
+        return;
+      }
+      
+      document.getElementById(`questionBlock${currentStep}`).classList.remove('hidden');
+      updateStepperUI();
+    }
+
+    function updateStepperUI() {
+      const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+      const stepperProgressBar = document.getElementById('stepperProgressBar');
+      if (stepperProgressBar) {
+        stepperProgressBar.style.width = `${progressPercent}%`;
+      }
+      
+      for (let i = 1; i <= totalSteps; i++) {
+        const circle = document.getElementById('stepIndicator' + i);
+        if (circle) {
+          circle.classList.remove('step-circle-active', 'step-circle-completed');
+          
+          if (i < currentStep) {
+            circle.classList.add('step-circle-completed');
+            circle.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-brandDark"></i>`;
+          } else if (i === currentStep) {
+            circle.classList.add('step-circle-active');
+            circle.textContent = i;
+          } else {
+            circle.textContent = i;
+          }
+        }
+      }
+      
+      const prevBtn = document.getElementById('prevBtn');
+      if (prevBtn) {
+        if (currentStep === 1) {
+          prevBtn.classList.add('invisible');
+        } else {
+          prevBtn.classList.remove('invisible');
+        }
+      }
+      
+      const nextBtn = document.getElementById('nextBtn');
+      if (nextBtn) {
+        const categories = ['skin', 'sun', 'hair', 'eyes', 'jewel'];
+        const targetCategory = categories[currentStep - 1];
+        
+        if (userResponses[targetCategory]) {
+          nextBtn.removeAttribute('disabled');
+        } else {
+          nextBtn.setAttribute('disabled', 'true');
+        }
+        
+        if (currentStep === totalSteps) {
+          nextBtn.textContent = "Finalise Spectrum";
+        } else {
+          nextBtn.textContent = "Next";
+        }
+      }
+      
+      lucide.createIcons();
+    }
+
+    function evaluateTraitsMatrix() {
+      let coolWeights = 0;
+      let warmWeights = 0;
+      let neutralWeights = 0;
+
+      if (userResponses.skin === 'cool') coolWeights += 2.5;
+      else if (userResponses.skin === 'warm') warmWeights += 2.5;
+      else neutralWeights += 2.5;
+
+      if (userResponses.sun === 'cool') coolWeights += 1.5;
+      else if (userResponses.sun === 'warm') warmWeights += 1.5;
+      else neutralWeights += 1.5;
+
+      if (userResponses.hair === 'cool' || userResponses.hair === 'cool-2') coolWeights += 1.0;
+      else if (userResponses.hair === 'warm') warmWeights += 1.0;
+      else neutralWeights += 1.0;
+
+      if (userResponses.eyes === 'cool') coolWeights += 1.0;
+      else if (userResponses.eyes === 'warm') warmWeights += 1.0;
+      else neutralWeights += 1.0;
+
+      if (userResponses.jewel === 'cool') coolWeights += 1.5;
+      else if (userResponses.jewel === 'warm' || userResponses.jewel === 'warm-2') warmWeights += 1.5;
+      else neutralWeights += 1.5;
+
+      let resolvedUndertone = 'neutral';
+      if (coolWeights > warmWeights && coolWeights >= neutralWeights) {
+        resolvedUndertone = 'cool';
+      } else if (warmWeights > coolWeights && warmWeights >= neutralWeights) {
+        resolvedUndertone = 'warm';
+      } else {
+        resolvedUndertone = 'neutral';
+      }
+
+      renderAnalysisReport(resolvedUndertone);
+    }
+
+    function setElText(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+    
+    function setElHtml(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = val;
+    }
+
+    function renderAnalysisReport(undertone) {
+      let data = {};
+
+      if (undertone === 'cool') {
+        data = {
+          season: "Cool Tone (Blue-Based Undertone)",
+          cheesy: "Are you sculpted from pure glacier ice? Because you're giving absolute frostbite to anyone looking too close! Icy blue hues and raspberry coordinates are your personal runway crown jewels.",
+          title: "Icy Blue-Based Crystal Aura",
+          desc: "Think icy vibes, blueberry energy. Your physical profiles display pink, red, or blue undertones where silver jewellery pops, veins lean blue/purple, and your skin quickly reacts to sun exposure.",
+          metalTitle: "Sterling Silver & Platinum",
+          metalDesc: "Your skin's underlying pigment parameters perfectly capture and reflect cool silver waves like liquid moonlight. Steer clear of brassy, overly warm golds which can disrupt your crisp natural clarity.",
+          metalGlow: "#a5f3fc",
+          hairTitle: "Icy Platinum & Cool Espresso",
+          hairDesc: "Ashy tones are your absolute crown royalty. Embrace high-fashion platinum blonde, cool ash browns, dark espresso, or jet obsidian black. Avoid brassy gold, copper, and warm honey browns.",
+          hairGlow: "#be185d",
+          metals: [{name:"Silver", hex:"#cbd5e1"}, {name:"Platinum", hex:"#e2e8f0"}, {name:"White Gold", hex:"#f1f5f9"}],
+          hair: [{name:"Platinum", hex:"#f8fafc"}, {name:"Ash Brown", hex:"#5c524d"}, {name:"Obsidian Black", hex:"#0a0a0a"}, {name:"Cool Espresso", hex:"#27211e"}],
+          fabulous: [
+            { name: "Icy Celestial Blue", hex: "#a5f3fc", desc: "Reflects immaculate clear, cool slate-like brightness near your face." },
+            { name: "Raspberry Seduction", hex: "#be185d", desc: "Brings out the vivid healthy rosy glow of your natural circulation." },
+            { name: "Royal Lavender", hex: "#c084fc", desc: "Neutralizes sallow reflections and highlights clean jaw symmetry." },
+            { name: "Vibrant Emerald", hex: "#047857", desc: "Creates dramatic high-contrast perimeter that elevates the iris focus." },
+            { name: "Orchid Pink", hex: "#db2777", desc: "An energetic cool pink that highlights cheek contour lines beautifully." },
+            { name: "Midnight Sapphire", hex: "#1e3a8a", desc: "A stately, powerful deep blue that frames skin with rich intensity." },
+            { name: "Silver Mist", hex: "#94a3b8", desc: "A sleek, metallic-reflecting grey that complements icy eye hues." },
+            { name: "Cool Cranberry", hex: "#9d174d", desc: "Deep wine red that accentuates lip definition and sharp features." }
+          ],
+          universal: [{name:"Classic Navy", hex:"#1e3a8a"}, {name:"Deep Charcoal", hex:"#374151"}, {name:"Heather Slate", hex:"#6b7280"}],
+          avoid: [
+            { name: "Vibrant Tangerine Orange", hex: "#f97316", desc: "Clashes with cool proteins, casting yellow sallow shades onto your chin." },
+            { name: "Mustard Gold", hex: "#eab308", desc: "Accentuates under-eye dark circles and fatigue shadows instantly." },
+            { name: "Cinnamon Sand", hex: "#7c2d12", desc: "Can wash out and completely dull natural crown hair highlights." }
+          ]
+        };
+      } else if (undertone === 'warm') {
+        data = {
+          season: "Warm Tone (Yellow-Based Undertone)",
+          cheesy: "Did you just walk out of a golden hour filter, or are you actually holding the sun hostage? Warm terracotta and sun-kissed honey shades are practically bowing down to you!",
+          title: "Golden Yellow-Based Glow Aura",
+          desc: "Think sunshine + golden hour filter IRL. Mapped markers indicate yellow, peach, or warm golden baselines where veins lean green, gold jewellery hits hard, and you tan smoothly.",
+          metalTitle: "18K Yellow Gold & Rose Gold",
+          metalDesc: "The solar energy of gold merges seamlessly with your rich peach-olive proteins, creating a high-fashion, cohesive, lit-from-within glow.",
+          metalGlow: "#fb923c",
+          hairTitle: "Golden Honey & Rich Auburn",
+          hairDesc: "Flourish with solar-infused pigments. Golden blonde, honey brown, rich warm chestnut, copper, auburn, or warm golden-black highlight your warm peach-olive base.",
+          hairGlow: "#b45309",
+          metals: [{name:"18K Gold", hex:"#fbbf24"}, {name:"Rose Gold", hex:"#fda4af"}, {name:"Bronze", hex:"#b45309"}],
+          hair: [{name:"Honey Blonde", hex:"#fcd34d"}, {name:"Honey Brown", hex:"#92400e"}, {name:"Auburn Red", hex:"#7c2d12"}, {name:"Warm Black", hex:"#171412"}],
+          fabulous: [
+            { name: "Terracotta Sunset", hex: "#c2410c", desc: "Accentuates your natural golden-peach matrix and adds depth." },
+            { name: "Rich Forest Moss", hex: "#15803d", desc: "Sets a beautifully organic, grounded perimeter around your cheek structures." },
+            { name: "Toasted Honey Mustard", hex: "#b45309", desc: "Flashes golden hour vibes onto your facial center, highlighting your skin sheen." },
+            { name: "Premium Peach Coral", hex: "#fb923c", desc: "Unlocks rich warm rosiness, making you look like you slept 8 hours instantly." },
+            { name: "Desert Amber", hex: "#d97706", desc: "A glowing, rich golden-yellow that enhances gold undertones." },
+            { name: "Olive Branch", hex: "#65a30d", desc: "A muted golden-green that balances redness while elevating skin luminosity." },
+            { name: "Warm Toasted Cocoa", hex: "#78350f", desc: "A rich chocolatey neutral that serves as a stunning structural frame." },
+            { name: "Marigold Bloom", hex: "#f59e0b", desc: "Vibrant warm yellow that makes natural eye flecks pop with energy." }
+          ],
+          universal: [{name:"Warm Off-White", hex:"#fafaf9"}, {name:"Rich Camel Taupe", hex:"#d97706"}, {name:"Soft Forest Sage", hex:"#14532d"}],
+          avoid: [
+            { name: "Icy Slate Grey", hex: "#9ca3af", desc: "Drains your healthy solar warmth, making you look artificially tired." },
+            { name: "Neon Violet Magenta", hex: "#d946ef", desc: "Clashes aggressively, casting harsh contrasting purples over your face." },
+            { name: "Matte Blue Lavender", hex: "#818cf8", desc: "Neutralizes your glowing undertones and leads to a fatigued, grey cast." }
+          ]
+        };
+      } else {
+        data = {
+          season: "Warm-Cool Tone (Neutral Undertone)",
+          cheesy: "You must be an international peace treaty, because your undertones have achieved perfect global balance! Gold? Silver? Please, you don't choose, you dominate both.",
+          title: "Balanced Soft Hybrid Aura",
+          desc: "Aka the lucky ones who get the 'I can wear most colours without dying' privilege. Your skin baseline fluctuates safely between warm and cool indexes.",
+          metalTitle: "Dual Affinity: Gold & Silver",
+          metalDesc: "The absolute privilege of the hybrid. You look spectacular combining both liquid sterling silver and warm golds in a single styling statement without either washing you out.",
+          metalGlow: "#c5a880",
+          hairTitle: "Chocolate Mocha & Soft Caramel",
+          hairDesc: "The luxury of balance allows you to shine in transitional, balanced tones. Sandy blonde, rich chocolate brown, soft caramel, and mahogany look gorgeous.",
+          hairGlow: "#a8a29e",
+          metals: [{name:"Silver", hex:"#cbd5e1"}, {name:"Yellow Gold", hex:"#eab308"}, {name:"Rose Gold", hex:"#fda4af"}],
+          hair: [{name:"Sandy Blonde", hex:"#fef08a"}, {name:"Soft Caramel", hex:"#ca8a04"}, {name:"Mocha Brown", hex:"#451a03"}, {name:"Mahogany", hex:"#78350f"}],
+          fabulous: [
+            { name: "Deep Sage Teal", hex: "#0f766e", desc: "Strikes the perfect cool-warm balance that emphasizes eye clarity." },
+            { name: "Soft Dusty Rose", hex: "#fda4af", desc: "Provides beautiful fresh brightness that feels natural and light-reflecting." },
+            { name: "Earthy Taupe Sand", hex: "#a8a29e", desc: "An impeccable editorial slate that coordinates flawlessly with both jewel tones and pastels." },
+            { name: "Muted Olive Sage", hex: "#4d7c0f", desc: "Soothes overall face redness while maintaining highly fashionable depth." },
+            { name: "Premium Plum", hex: "#581c87", desc: "A balanced deep purple that flatters both warm highlights and cool frames." },
+            { name: "Chiffon Cream", hex: "#fef9c3", desc: "Soft, gentle golden-cream that doesn't overpower neutral value scales." },
+            { name: "Slate Teal", hex: "#115e59", desc: "A moody blue-green that highlights lip and brow definition subtly." },
+            { name: "Ethereal Lilac", hex: "#e9d5ff", desc: "A delicate lavender-pink hybrid that adds soft-focus radiance to your skin." }
+          ],
+          universal: [{name:"Balanced Navy", hex:"#1e3a8a"}, {name:"Universal Off-White", hex:"#f5f5f4"}, {name:"Slate Mist", hex:"#4b5563"}],
+          avoid: [
+            { name: "Screaming Neon Yellow", hex: "#facc15", desc: "Completely overpowers your delicate, balanced skin chemistry." },
+            { name: "Chalky Stark White", hex: "#ffffff", desc: "Can wash out your subtle neutral values, making you look slightly pale." },
+            { name: "Harsh Obsidian Black", hex: "#000000", desc: "Heavy blacks might overpower your balanced features if not styled with contrasts." }
+          ]
+        };
+      }
+
+      const resultsMainTitle = document.getElementById('resultsMainTitle');
+      if (resultsMainTitle) {
+        resultsMainTitle.innerHTML = `
+          Your Skin Undertone: <span class="text-brandGold block sm:inline italic font-light">${data.season}</span>
+        `;
+      }
+      
+      let sampledHex = '#c5a880';
+      if (undertone === 'cool') {
+        sampledHex = '#a5f3fc';
+      } else if (undertone === 'warm') {
+        sampledHex = '#fb923c';
+      }
+
+      setElText('cheesyQuoteBox', `"${data.cheesy}"`);
+      setElText('resultsSampledHexText', sampledHex);
+      
+      const resultsSampledHexCircle = document.getElementById('resultsSampledHexCircle');
+      if (resultsSampledHexCircle) {
+        resultsSampledHexCircle.style.backgroundColor = sampledHex;
+      }
+      
+      setElText('resultsSeasonBadge', undertone.toUpperCase());
+      setElText('resultsUndertoneTitle', data.title);
+      setElText('resultsUndertoneDesc', data.desc);
+      
+      const dynamicGlowBackdrop = document.getElementById('dynamicGlowBackdrop');
+      if (dynamicGlowBackdrop) {
+        dynamicGlowBackdrop.style.backgroundColor = data.fabulous[0].hex;
+      }
+
+      setElText('resultsMetalTitle', data.metalTitle);
+      setElText('resultsMetalDesc', data.metalDesc);
+      
+      const metalDynamicGlow = document.getElementById('metalDynamicGlow');
+      if (metalDynamicGlow) {
+        metalDynamicGlow.style.backgroundColor = data.metalGlow;
+      }
+
+      setElText('resultsHairTitle', data.hairTitle);
+      setElText('resultsHairDesc', data.hairDesc);
+      
+      const hairDynamicGlow = document.getElementById('hairDynamicGlow');
+      if (hairDynamicGlow) {
+        hairDynamicGlow.style.backgroundColor = data.hairGlow;
+      }
+
+      const metalSwatches = document.getElementById('metalMiniSwatches');
+      if (metalSwatches) {
+        metalSwatches.innerHTML = '';
+        data.metals.forEach(swatch => {
+          metalSwatches.innerHTML += `
+            <div class="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-full border border-brandBorder">
+              <span class="w-3 h-3 rounded-full border border-white/10" style="background-color: ${swatch.hex};"></span>
+              <span class="text-[9px] font-mono text-brandMuted uppercase tracking-wider">${swatch.name}</span>
+            </div>`;
+        });
+      }
+
+      const hairSwatches = document.getElementById('hairMiniSwatches');
+      if (hairSwatches) {
+        hairSwatches.innerHTML = '';
+        data.hair.forEach(swatch => {
+          hairSwatches.innerHTML += `
+            <div class="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-full border border-brandBorder">
+              <span class="w-3 h-3 rounded-full border border-white/10" style="background-color: ${swatch.hex};"></span>
+              <span class="text-[9px] font-mono text-brandMuted uppercase tracking-wider">${swatch.name}</span>
+            </div>`;
+        });
+      }
+
+      const fabulousGrid = document.getElementById('resultsFabulousGrid');
+      if (fabulousGrid) {
+        fabulousGrid.innerHTML = '';
+        data.fabulous.forEach(color => {
+          fabulousGrid.innerHTML += `
+            <div onclick="copyHexToClipboard('${color.hex}')" class="group bg-[#1a1816] hover:bg-[#201d1a] border border-brandBorder hover:border-brandGold/40 transition-all p-4 rounded-2xl flex items-center justify-between cursor-pointer shadow-md">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl border border-white/10 shrink-0 shadow-inner" style="background-color: ${color.hex};"></div>
+                <div class="space-y-0.5">
+                  <span class="font-cormorant text-lg font-light text-brandLinen block leading-snug">${color.name}</span>
+                  <span class="block text-[10px] font-mono text-brandMuted">${color.hex} — <span class="italic text-[9px] text-brandGold">Fabulous</span></span>
+                </div>
+              </div>
+              <div class="text-[10px] text-brandMuted group-hover:text-brandGold transition-colors flex items-center gap-1 shrink-0">
+                Copy <i data-lucide="copy" class="w-3 h-3"></i>
+              </div>
+            </div>`;
+        });
+      }
+
+      const universalGrid = document.getElementById('resultsUniversalGrid');
+      if (universalGrid) {
+        universalGrid.innerHTML = '';
+        data.universal.forEach(color => {
+          universalGrid.innerHTML += `
+            <div onclick="copyHexToClipboard('${color.hex}')" class="group bg-[#181615]/60 hover:bg-[#1e1c1b] border border-brandBorder px-4 py-3 rounded-full flex items-center gap-3 cursor-pointer transition-all shadow-sm">
+              <span class="w-4 h-4 rounded-full border border-white/10 shrink-0" style="background-color: ${color.hex};"></span>
+              <span class="font-mono text-xs text-brandLinen group-hover:text-brandGold transition-colors">${color.name} (${color.hex})</span>
+            </div>`;
+        });
+      }
+
+      const avoidGrid = document.getElementById('resultsAvoidGrid');
+      if (avoidGrid) {
+        avoidGrid.innerHTML = '';
+        data.avoid.forEach(color => {
+          avoidGrid.innerHTML += `
+            <div class="bg-[#1a1816]/50 border border-[#2c1a1a]/50 p-4 rounded-2xl flex items-center gap-4 h-full">
+              <div class="w-12 h-12 rounded-xl border border-white/5 shrink-0" style="background-color: ${color.hex};"></div>
+              <div class="space-y-1">
+                <span class="font-cormorant text-lg font-light text-brandLinen">${color.name}</span>
+                <p class="text-[10px] text-brandMuted leading-snug">${color.desc}</p>
+              </div>
+            </div>`;
+        });
+      }
+
+      const captureStage = document.getElementById('captureStage');
+      if (captureStage) captureStage.classList.add('hidden');
+      
+      const resultsStage = document.getElementById('resultsStage');
+      if (resultsStage) resultsStage.classList.remove('hidden');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    }
+
+    function copyHexToClipboard(hexString) {
+      const textarea = document.createElement('textarea');
+      textarea.value = hexString;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      triggerBanner(`Copied ${hexString} color code to clipboard.`);
+    }
+
+    function resetQuiz() {
+      userResponses = { skin: null, sun: null, hair: null, eyes: null, jewel: null };
+      currentStep = 1;
+      
+      document.querySelectorAll('.option-selected').forEach(btn => btn.classList.remove('option-selected'));
+      
+      for(let i=1; i<=totalSteps; i++) {
+        const qBlock = document.getElementById(`questionBlock${i}`);
+        if (qBlock) qBlock.classList.add('hidden');
+      }
+      const qBlock1 = document.getElementById('questionBlock1');
+      if (qBlock1) qBlock1.classList.remove('hidden');
+      
+      updateStepperUI();
+      
+      const resultsStage = document.getElementById('resultsStage');
+      if (resultsStage) resultsStage.classList.add('hidden');
+      
+      const captureStage = document.getElementById('captureStage');
+      if (captureStage) captureStage.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

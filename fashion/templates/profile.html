@@ -1,0 +1,568 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ user.username }} — Vogue Vista</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&family=IM+Fell+English:ital@1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'profile.css' %}" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR NAV ── -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-v">V</span><span class="logo-text">ogue Vista</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#profile-hero"   class="nav-link active" data-section="profile-hero">Profile</a></li>
+      <li><a href="#scores"          class="nav-link" data-section="scores">Fashion Score</a></li>
+      <li><a href="#color-history"   class="nav-link" data-section="color-history">Color Analysis</a></li>
+      <li><a href="#body-history"    class="nav-link" data-section="body-history">Body Analysis</a></li>
+      <li><a href="#wardrobe"        class="nav-link" data-section="wardrobe">Wardrobe</a></li>
+      <li><a href="#saved-looks"     class="nav-link" data-section="saved-looks">Saved Looks</a></li>
+      <li><a href="#timeline"        class="nav-link" data-section="timeline">Evolution</a></li>
+      <li><a href="#ai-assistant"    class="nav-link" data-section="ai-assistant">AI Assistant</a></li>
+      <li><a href="#settings"        class="nav-link" data-section="settings">Settings</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <span>© Vogue Vista</span>
+    </div>
+  </nav>
+
+  <!-- ── MOBILE HEADER ── -->
+  <header class="mobile-header">
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="mobile-logo">Vogue Vista</span>
+  </header>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="dashboard-main">
+
+    <!-- ════════════════════════════════════════
+         1. PROFILE HERO
+    ════════════════════════════════════════ -->
+    <section id="profile-hero" class="section fade-in">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="avatar-wrap">
+            <div class="avatar-ring"></div>
+            {% if profile_picture %}
+              <img src="{{ profile_picture }}" alt="{{ user.username }}" class="avatar-img" />
+            {% else %}
+              <div class="avatar-placeholder">
+                <span>{{ user.username|first|upper }}</span>
+              </div>
+            {% endif %}
+          </div>
+          <div class="hero-meta">
+            <p class="hero-greeting">Welcome back,</p>
+            <h1 class="hero-name">{{ user.username }}</h1>
+            <p class="hero-email">{{ user.email }}</p>
+            <p class="hero-since">Member since <em>{{ user.date_joined|date:"F Y" }}</em></p>
+            <span class="archetype-badge">
+              {% if fashion_score.archetype %}{{ fashion_score.archetype }}{% else %}Modern Minimalist{% endif %}
+            </span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card" data-count="{{ fashion_score.total_analyses|default:'0' }}">
+            <span class="stat-number counter">0</span>
+            <span class="stat-label">Total Analyses</span>
+          </div>
+          <div class="stat-card" data-count="{{ color_history|length }}">
+            <span class="stat-number counter">0</span>
+            <span class="stat-label">Color Analyses</span>
+          </div>
+          <div class="stat-card" data-count="{{ body_history|length }}">
+            <span class="stat-number counter">0</span>
+            <span class="stat-label">Body Analyses</span>
+          </div>
+          <div class="stat-card" data-count="{{ fashion_score.outfit_recs|default:'0' }}">
+            <span class="stat-number counter">0</span>
+            <span class="stat-label">Outfit Recs</span>
+          </div>
+          <div class="stat-card" data-count="{{ saved_outfits|length }}">
+            <span class="stat-number counter">0</span>
+            <span class="stat-label">Saved Looks</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         2. FASHION SCORE DASHBOARD
+    ════════════════════════════════════════ -->
+    <section id="scores" class="section fade-in">
+      <div class="section-header">
+        <h2 class="section-title">Fashion Score</h2>
+        <p class="section-sub">Your personal style intelligence metrics</p>
+      </div>
+      <div class="score-grid">
+        <div class="score-card">
+          <svg class="ring-svg" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="ring-fill" cx="60" cy="60" r="50"
+              data-score="{{ fashion_score.style_consistency|default:'78' }}"/>
+          </svg>
+          <div class="score-info">
+            <span class="score-value">{{ fashion_score.style_consistency|default:'78' }}</span>
+            <span class="score-name">Style Consistency</span>
+          </div>
+        </div>
+        <div class="score-card">
+          <svg class="ring-svg" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="ring-fill" cx="60" cy="60" r="50"
+              data-score="{{ fashion_score.wardrobe_versatility|default:'65' }}"/>
+          </svg>
+          <div class="score-info">
+            <span class="score-value">{{ fashion_score.wardrobe_versatility|default:'65' }}</span>
+            <span class="score-name">Wardrobe Versatility</span>
+          </div>
+        </div>
+        <div class="score-card">
+          <svg class="ring-svg" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="ring-fill" cx="60" cy="60" r="50"
+              data-score="{{ fashion_score.color_harmony|default:'82' }}"/>
+          </svg>
+          <div class="score-info">
+            <span class="score-value">{{ fashion_score.color_harmony|default:'82' }}</span>
+            <span class="score-name">Color Harmony</span>
+          </div>
+        </div>
+        <div class="score-card">
+          <svg class="ring-svg" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="ring-fill" cx="60" cy="60" r="50"
+              data-score="{{ fashion_score.personal_brand|default:'71' }}"/>
+          </svg>
+          <div class="score-info">
+            <span class="score-value">{{ fashion_score.personal_brand|default:'71' }}</span>
+            <span class="score-name">Personal Brand</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         3. COLOR ANALYSIS HISTORY
+    ════════════════════════════════════════ -->
+    <section id="color-history" class="section fade-in">
+      <div class="section-header">
+        <h2 class="section-title">Color Analysis History</h2>
+        <p class="section-sub">Your seasonal colour journey</p>
+      </div>
+
+      <div class="history-timeline">
+        {% for analysis in color_history %}
+        <div class="history-card color-card" style="animation-delay: {{ forloop.counter0 }}00ms">
+          <div class="card-header">
+            <div class="card-meta">
+              <span class="card-date">{{ analysis.date|date:"d M Y" }}</span>
+              <span class="season-badge season-{{ analysis.season|lower }}">{{ analysis.season }}</span>
+            </div>
+            <div class="card-undertone">Undertone: <strong>{{ analysis.undertone }}</strong></div>
+          </div>
+
+          <div class="card-body">
+            <div class="color-info-row">
+              <div>
+                <p class="label">Skin Tone</p>
+                <p class="value">{{ analysis.skin_tone }}</p>
+              </div>
+              <div>
+                <p class="label">Season</p>
+                <p class="value italic">{{ analysis.season }}</p>
+              </div>
+            </div>
+
+            <div class="palette-section">
+              <p class="label">Best Colours</p>
+              <div class="palette-row">
+                {% for color in analysis.best_colors %}
+                <span class="swatch" style="background:{{ color }}" title="{{ color }}"></span>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="palette-section">
+              <p class="label avoid-label">Avoid</p>
+              <div class="palette-row">
+                {% for color in analysis.avoid_colors %}
+                <span class="swatch swatch-avoid" style="background:{{ color }}" title="{{ color }}"></span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <button class="expand-btn" data-target="color-detail-{{ forloop.counter }}">
+            View Details <span class="expand-icon">+</span>
+          </button>
+          <div class="expand-detail" id="color-detail-{{ forloop.counter }}">
+            <p><strong>Full Palette Preview</strong></p>
+            <div class="full-palette">
+              {% for color in analysis.best_colors %}
+              <div class="palette-chip" style="background:{{ color }}">
+                <span>{{ color }}</span>
+              </div>
+              {% endfor %}
+            </div>
+            {% if analysis.notes %}
+            <p class="analysis-notes">{{ analysis.notes }}</p>
+            {% endif %}
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+          <p class="empty-icon">◈</p>
+          <p>No colour analyses yet. Begin your colour journey.</p>
+          <a href="{% url 'color' %}" class="btn-gold">Start Analysis</a>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         4. BODY ANALYSIS HISTORY
+    ════════════════════════════════════════ -->
+    <section id="body-history" class="section fade-in">
+      <div class="section-header">
+        <h2 class="section-title">Body Analysis History</h2>
+        <p class="section-sub">Your fit intelligence reports</p>
+      </div>
+
+      <div class="history-grid">
+        {% for analysis in body_history %}
+        <div class="body-card fade-in" style="animation-delay: {{ forloop.counter0 }}00ms">
+          <div class="body-card-top">
+            <span class="card-date">{{ analysis.date|date:"d M Y" }}</span>
+            <span class="body-type-badge">{{ analysis.body_type }}</span>
+          </div>
+
+          <div class="body-card-section">
+            <p class="label">Measurements</p>
+            <div class="measurements-row">
+              {% if analysis.bust %}<span class="measure-chip">Bust: {{ analysis.bust }}</span>{% endif %}
+              {% if analysis.waist %}<span class="measure-chip">Waist: {{ analysis.waist }}</span>{% endif %}
+              {% if analysis.hips %}<span class="measure-chip">Hips: {{ analysis.hips }}</span>{% endif %}
+            </div>
+          </div>
+
+          <div class="body-card-section">
+            <p class="label">Recommended Fits</p>
+            <div class="tag-row">
+              {% for fit in analysis.recommended_fits %}
+              <span class="tag">{{ fit }}</span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="body-card-section">
+            <p class="label">Necklines</p>
+            <div class="tag-row">
+              {% for neckline in analysis.recommended_necklines %}
+              <span class="tag">{{ neckline }}</span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="body-card-section">
+            <p class="label">Fabrics</p>
+            <div class="tag-row">
+              {% for fabric in analysis.recommended_fabrics %}
+              <span class="tag tag-fabric">{{ fabric }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+          <p class="empty-icon">◈</p>
+          <p>No body analyses yet.</p>
+          <a href="{% url 'body' %}" class="btn-gold">Start Analysis</a>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         5. PERSONAL WARDROBE INSIGHTS
+    ════════════════════════════════════════ -->
+    <section id="wardrobe" class="section fade-in">
+      <div class="section-header">
+        <h2 class="section-title">Wardrobe Intelligence</h2>
+        <p class="section-sub">Curated insights from your style data</p>
+      </div>
+
+      <div class="wardrobe-grid">
+        <div class="wardrobe-card">
+          <div class="wardrobe-icon">◑</div>
+          <h3 class="wardrobe-card-title">Most Flattering Colours</h3>
+          <div class="insight-swatches">
+            {% if fashion_score.flattering_colors %}
+              {% for color in fashion_score.flattering_colors %}
+              <span class="swatch large-swatch" style="background:{{ color }}"></span>
+              {% endfor %}
+            {% else %}
+              <span class="swatch large-swatch" style="background:#C4A96B"></span>
+              <span class="swatch large-swatch" style="background:#D4A5A0"></span>
+              <span class="swatch large-swatch" style="background:#8A8278"></span>
+              <span class="swatch large-swatch" style="background:#E8D5A3"></span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="wardrobe-card">
+          <div class="wardrobe-icon">◻</div>
+          <h3 class="wardrobe-card-title">Best Silhouettes</h3>
+          <ul class="insight-list">
+            {% if fashion_score.best_silhouettes %}
+              {% for s in fashion_score.best_silhouettes %}
+              <li>{{ s }}</li>
+              {% endfor %}
+            {% else %}
+              <li>A-Line</li><li>Wrap Dress</li><li>Tailored Blazer</li><li>High-Rise Trousers</li>
+            {% endif %}
+          </ul>
+        </div>
+
+        <div class="wardrobe-card">
+          <div class="wardrobe-icon">✦</div>
+          <h3 class="wardrobe-card-title">Top Outfit Combinations</h3>
+          <ul class="insight-list">
+            {% if fashion_score.outfit_combos %}
+              {% for c in fashion_score.outfit_combos %}
+              <li>{{ c }}</li>
+              {% endfor %}
+            {% else %}
+              <li>Cream blouse + tailored trousers</li>
+              <li>Wrap dress + strappy heels</li>
+              <li>Oversized blazer + slim jeans</li>
+            {% endif %}
+          </ul>
+        </div>
+
+        <div class="wardrobe-card">
+          <div class="wardrobe-icon">◈</div>
+          <h3 class="wardrobe-card-title">Frequently Recommended</h3>
+          <div class="tag-row">
+            {% if fashion_score.frequent_styles %}
+              {% for style in fashion_score.frequent_styles %}
+              <span class="tag tag-gold">{{ style }}</span>
+              {% endfor %}
+            {% else %}
+              <span class="tag tag-gold">Minimalist</span>
+              <span class="tag tag-gold">Classic</span>
+              <span class="tag tag-gold">Soft Feminine</span>
+              <span class="tag tag-gold">Elevated Basics</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         6. SAVED LOOKS GALLERY
+    ════════════════════════════════════════ -->
+    <section id="saved-looks" class="section fade-in">
+      <div class="section-header">
+        <h2 class="section-title">Saved Looks</h2>
+        <p class="section-sub">Your curated fashion archive</p>
+      </div>
+
+      <div class="masonry-gallery">
+        {% for outfit in saved_outfits %}
+        <div class="look-card">
+          <div class="look-img-wrap">
+            {% if outfit.image %}
+            <img src="{{ outfit.image }}" alt="{{ outfit.occasion }}" class="look-img" loading="lazy"/>
+            {% else %}
+            <div class="look-img-placeholder">
+              <span>{{ outfit.style_category|first|upper }}</span>
+            </div>
+            {% endif %}
+            <div class="look-overlay">
+              <button class="quick-view-btn">Quick View</button>
+            </div>
+          </div>
+          <div class="look-info">
+            <p class="look-occasion">{{ outfit.occasion }}</p>
+            <p class="look-category">{{ outfit.style_category }}</p>
+            <p class="look-date">{{ outfit.saved_date|date:"d M Y" }}</p>
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty-state full-width">
+          <p class="empty-icon">◈</p>
+          <p>No saved looks yet. Start building your fashion archive.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         7. STYLE EVOLUTION TIMELINE
+    ════════════════════════════════════════ -->
+    <section id="timeline" class="section fade-in">
+      <div class="section-header">
+        <h2 class="section-title">Style Evolution</h2>
+        <p class="section-sub">Your fashion journey over time</p>
+      </div>
+
+      <div class="timeline-wrap">
+        <div class="timeline-line"></div>
+
+        {% if color_history %}
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="tl-tag">First Analysis</span>
+            <h4 class="tl-title">{{ color_history.last.season }} Season Discovered</h4>
+            <p class="tl-date">{{ color_history.last.date|date:"d M Y" }}</p>
+            <p class="tl-desc">Your colour journey began. Undertone: {{ color_history.last.undertone }}.</p>
+          </div>
+        </div>
+        {% endif %}
+
+        {% for analysis in color_history reversed %}
+        {% if not forloop.first and not forloop.last %}
+        <div class="timeline-item {% cycle 'right' 'left' %}">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="tl-tag">Update</span>
+            <h4 class="tl-title">{{ analysis.season }} Palette</h4>
+            <p class="tl-date">{{ analysis.date|date:"d M Y" }}</p>
+            <p class="tl-desc">Skin tone: {{ analysis.skin_tone }}.</p>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        {% if color_history and color_history|length > 1 %}
+        <div class="timeline-item right">
+          <div class="timeline-dot gold-dot"></div>
+          <div class="timeline-card timeline-card-gold">
+            <span class="tl-tag">Latest</span>
+            <h4 class="tl-title">{{ color_history.first.season }} — Current Season</h4>
+            <p class="tl-date">{{ color_history.first.date|date:"d M Y" }}</p>
+            <p class="tl-desc">Most recent analysis. You've refined your palette beautifully.</p>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if not color_history %}
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="tl-tag">Begin</span>
+            <h4 class="tl-title">Start Your Journey</h4>
+            <p class="tl-desc">Complete your first analysis to begin tracking your style evolution.</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         8. AI FASHION ASSISTANT
+    ════════════════════════════════════════ -->
+    <section id="ai-assistant" class="section fade-in">
+      <div class="section-header">
+        <h2 class="section-title">AI Fashion Assistant</h2>
+        <p class="section-sub">Your personal style intelligence</p>
+      </div>
+
+      <div class="ai-card">
+        <div class="ai-card-header">
+          <span class="ai-dot"></span>
+          <span class="ai-label">Ask Vogue Vista AI</span>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-bubble assistant-bubble">
+            <p>Hello, {{ user.username }}. I'm your personal style consultant. How may I assist you today?</p>
+          </div>
+        </div>
+
+        <div class="chat-suggestions">
+          <button class="suggestion-chip" onclick="fillSuggestion(this)">What should I wear for a wedding?</button>
+          <button class="suggestion-chip" onclick="fillSuggestion(this)">Suggest colours for my skin tone.</button>
+          <button class="suggestion-chip" onclick="fillSuggestion(this)">How do I build a capsule wardrobe?</button>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" class="chat-input" placeholder="Ask a fashion question…" />
+          <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         9. SETTINGS
+    ════════════════════════════════════════ -->
+    <section id="settings" class="section fade-in">
+      <div class="section-header">
+        <h2 class="section-title">Settings</h2>
+        <p class="section-sub">Manage your account and preferences</p>
+      </div>
+
+      <div class="settings-grid">
+        <a href="/profile/edit/" class="settings-card">
+          <span class="settings-icon">✦</span>
+          <div>
+            <h4 class="settings-title">Edit Profile</h4>
+            <p class="settings-desc">Update your name, photo, and style preferences</p>
+          </div>
+          <span class="settings-arrow">→</span>
+        </a>
+        <a href="/password/change/" class="settings-card">
+          <span class="settings-icon">◈</span>
+          <div>
+            <h4 class="settings-title">Change Password</h4>
+            <p class="settings-desc">Update your account security</p>
+          </div>
+          <span class="settings-arrow">→</span>
+        </a>
+        <a href="/profile/notifications/" class="settings-card">
+          <span class="settings-icon">◑</span>
+          <div>
+            <h4 class="settings-title">Notifications</h4>
+            <p class="settings-desc">Choose what updates you receive</p>
+          </div>
+          <span class="settings-arrow">→</span>
+        </a>
+        <a href="/profile/download-report/" class="settings-card">
+          <span class="settings-icon">◻</span>
+          <div>
+            <h4 class="settings-title">Download Reports</h4>
+            <p class="settings-desc">Export your full analysis history as PDF</p>
+          </div>
+          <span class="settings-arrow">→</span>
+        </a>
+        <a href="/profile/delete/" class="settings-card settings-card-danger">
+          <span class="settings-icon">✕</span>
+          <div>
+            <h4 class="settings-title">Delete Account</h4>
+            <p class="settings-desc">Permanently remove your account and data</p>
+          </div>
+          <span class="settings-arrow">→</span>
+        </a>
+      </div>
+    </section>
+
+  </main><!-- /dashboard-main -->
+
+  <script src="{% static 'profile.js' %}"></script>
+</body>
+</html>

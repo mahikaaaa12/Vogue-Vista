@@ -1,0 +1,90 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'signup.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Signup Page</title>
+</head>
+<body>
+    <section class="nav-bar">
+        <nav>
+            <a href="#" class="nav-logo">VOUGE <br> VISTA</a>
+            <div class="middle">
+                <div class="referrals">
+                    <p>Home</p>
+                    <p>Blog</p>
+                    <p>About Us</p>
+                    <p>Contact</p>
+                </div>
+            </div>
+            <div class="right">
+                <input type="text" class="search-bar" placeholder="   Search...">
+                <select name="languages" id="drop-down">
+                    <option value="">Select Language</option>
+                    <option value="">English (United States)</option>
+                    <option value="">Hindi</option>
+                    <option value="">Marathi</option>
+                    <option value="">Gujarati</option>
+                    <option value="">Tamil</option>
+                </select>
+            </div>
+        </nav>
+    </section>
+    <main>
+        <div class="left-main">
+            <video src="{% static 'Signin.mp4' %}" autoplay muted loop></video>
+        </div>
+        <div class="right-main">
+            <div class="container">
+                <h3>Sign up</h3>
+                <p>Sign up for free access to all our services</p>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="username">
+                        <p>Username</p>
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+
+                    <div class="email">
+                        <p>Email Address</p>
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+
+                    <div class="password">
+                        <p>Password</p>
+                        <input type="password" name="password" placeholder="Password" required>
+                        <p class="warning">
+                            Use 8 or more characters with a mix of letters, numbers & symbols
+                        </p>
+                    </div>
+
+                    <div class="terms">
+                        <div class="term1">
+                            <input type="checkbox" required>
+                            <p>Agree to our Terms of use and Privacy Policy</p>
+                        </div>
+
+                        <div class="term2">
+                            <input type="checkbox">
+                            <p>Subscribe to our monthly newsletter</p>
+                        </div>
+
+                        <button type="submit" class="button">Sign up</button>
+                        <p class="question">
+                            Already have an account?
+                            <a href="{% url 'login' %}">Log in</a>
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vogue Vista — Luxury Capture Hub</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Cormorant Garamond & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons Library -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind Custom Palette Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#131110',
+            brandCard: '#181615',
+            brandLinen: '#edeae4',
+            brandGold: '#c5a880',
+            brandBorder: '#2a2520',
+            brandMuted: '#b5afa2',
+          },
+          fontFamily: {
+            cormorant: ['"Cormorant Garamond"', 'serif'],
+            inter: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Premium Custom Styling for Animations & Visual Overrides -->
+  <style>
+    body {
+      /* Soft radial gradient from right side reproducing the elegant golden-brown glow in mockup */
+      background: radial-gradient(circle at 100% 40%, #1e1916 0%, #131110 75%);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Laser Scanning Bar Animation */
+    @keyframes scanLine {
+      0% { top: 0%; opacity: 0.8; }
+      50% { top: 100%; opacity: 0.8; }
+      100% { top: 0%; opacity: 0.8; }
+    }
+    .scanner-line {
+      animation: scanLine 3s infinite ease-in-out;
+    }
+
+    /* Transition Animations for Page View Sweeps */
+    .fade-in {
+      animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Custom Scrollbar for Luxury Aesthetic */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #131110;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2a2520;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #c5a880;
+    }
+    
+  </style>
+</head>
+<body class="min-h-screen text-brandLinen flex flex-col justify-between selection:bg-brandGold selection:text-black relative overflow-x-hidden">
+
+  <!-- Absolute Ambient Glow Orbs -->
+  <div class="absolute top-0 left-1/4 w-[40%] h-[40%] rounded-full bg-brandGold/5 blur-[130px] pointer-events-none"></div>
+  <div class="absolute bottom-10 right-10 w-[35%] h-[35%] rounded-full bg-brandGold/4 blur-[120px] pointer-events-none"></div>
+
+  <!-- Premium Header -->
+  <header class="max-w-7xl mx-auto w-full px-8 py-8 flex justify-between items-center relative z-20">
+    <div onclick="resetAll()" class="font-cormorant text-2xl tracking-[0.2em] font-light cursor-pointer hover:text-brandGold transition-all duration-300">
+      Vogue Vista
+    </div>
+    <div class="flex items-center gap-4 text-[10px] tracking-[0.3em] uppercase text-brandMuted">
+      <span>AI Skin Lab</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-brandGold animate-pulse"></span>
+    </div>
+  </header>
+
+  <!-- Main Workstation -->
+  <main class="max-w-7xl mx-auto w-full px-6 py-6 md:py-12 flex-grow flex flex-col items-stretch justify-start relative z-10">
+    
+    <!-- ================= STAGE 1: CAPTURE/UPLOAD HUB ================= -->
+    <div id="captureStage" class="w-full flex flex-col items-center">
+      
+      <!-- Premium "Go Back" Navigation Header Link -->
+      <div class="w-full max-w-4xl px-4 mb-6 flex justify-start">
+        <button onclick="goToPreviousPage()" class="group flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-brandMuted hover:text-brandLinen transition-colors duration-300 py-2">
+          <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-1"></i>
+          <span>Back</span>
+        </button>
+      </div>
+
+      <!-- Header Callout Text -->
+      <div class="text-center space-y-6 max-w-2xl mx-auto mb-16">
+        <h1 class="font-cormorant text-4xl sm:text-5xl md:text-6xl tracking-wide font-light leading-tight">
+          How would you like to capture?
+        </h1>
+        <p class="text-xs sm:text-sm md:text-base text-brandMuted font-light leading-relaxed max-w-xl mx-auto">
+          For perfect results, ensure your face is well-lit (natural daylight is best) with no harsh colored overhead lights or heavy filters.
+        </p>
+      </div>
+
+      <!-- Dual Capture Option Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
+        
+        <!-- CARD 1: CAMERA CAPTURE -->
+        <div id="cameraCard" onclick="triggerCameraInit(event)" class="group relative bg-brandCard rounded-[2rem] p-8 border border-brandBorder hover:border-brandGold/60 transition-all duration-500 flex flex-col justify-between items-center text-center w-full min-h-[380px] md:min-h-[420px] overflow-hidden shadow-2xl cursor-pointer">
+          <!-- Ambient corner decoration -->
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-brandGold/10 to-transparent rounded-full group-hover:scale-110 transition-transform duration-700 pointer-events-none"></div>
+
+          <!-- 1A: Idle State -->
+          <div id="camIdleState" class="w-full h-full flex flex-col justify-between items-center space-y-4">
+            <div class="w-20 h-20 rounded-full bg-[#1e1c1b] border border-[#2e2924] flex items-center justify-center group-hover:scale-105 transition-transform duration-500 shrink-0">
+              <i data-lucide="camera" class="w-6 h-6 text-brandGold"></i>
+            </div>
+            <div class="space-y-3 px-2">
+              <h3 class="font-cormorant text-2xl tracking-wide font-light">Use Camera Device</h3>
+              <p class="text-xs text-brandMuted leading-relaxed max-w-xs font-light">
+                Allow secure browser access to take a real-time skin tone snapshot directly from your device.
+              </p>
+            </div>
+            <button class="text-brandGold group-hover:text-brandLinen text-[11px] uppercase tracking-[0.25em] font-medium flex items-center gap-2 transition-colors duration-300 mt-2">
+              Open Camera <i data-lucide="chevron-right" class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"></i>
+            </button>
+          </div>
+
+          <!-- 1B: Active Camera Viewfinder State -->
+          <div id="camActiveState" class="absolute inset-0 z-20 bg-black flex flex-col justify-between p-4 hidden">
+            <div class="relative w-full h-[75%] rounded-2xl overflow-hidden bg-brandDark border border-brandBorder">
+              <video id="webcamVideo" autoplay playsinline muted class="w-full h-full object-cover scale-x-[-1]"></video>
+              <!-- Oval Alignment Guide -->
+              <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                <div class="w-[72%] h-[82%] border border-dashed border-brandGold/50 rounded-full"></div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between w-full px-2 pt-2">
+              <button onclick="deactivateCamera(event)" class="px-4 py-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-brandLinen transition-all text-xs">
+                Cancel
+              </button>
+              <button onclick="captureCameraSnapshot(event)" class="px-6 py-2.5 rounded-full bg-brandGold hover:bg-brandLinen text-black transition-all font-medium text-xs tracking-wider uppercase">
+                Snapshot
+              </button>
+              <button onclick="flipCameraOrientation(event)" class="p-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-brandLinen transition-all">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 1C: Interactive Preview / Scanning / Done States -->
+          <div id="camPreviewState" class="absolute inset-0 z-10 bg-brandCard flex flex-col items-center justify-center p-6 space-y-4 hidden">
+            <div class="relative w-36 h-36 rounded-full overflow-hidden border-2 border-brandGold/60 bg-brandDark">
+              <img id="camPreviewImg" src="" alt="Snapshot output" class="w-full h-full object-cover">
+              <div id="camScannerLine" class="absolute left-0 right-0 h-1 bg-brandGold shadow-[0_0_8px_#c5a880] scanner-line hidden"></div>
+            </div>
+            <div class="space-y-2 text-center w-full">
+              <h4 id="camStatusHeader" class="font-cormorant text-lg text-brandLinen italic">Evaluating Skin Spectrum...</h4>
+            </div>
+            <button onclick="resetCard('cameraCard', event)" class="text-xs text-brandMuted hover:text-brandLinen border-b border-brandBorder hover:border-white pb-0.5 transition-all uppercase tracking-widest mt-2">
+              Clear & Retake
+            </button>
+          </div>
+
+          <!-- 1D: Error State Overlay -->
+          <div id="camErrorState" class="absolute inset-0 z-30 bg-[#241716] p-6 flex flex-col justify-center items-center space-y-4 hidden">
+            <i data-lucide="alert-circle" class="w-10 h-10 text-red-400"></i>
+            <p id="camErrorText" class="text-xs text-red-200 leading-relaxed font-light"></p>
+            <button onclick="triggerCameraInit(event)" class="px-5 py-2 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-200 border border-red-500/20 text-[10px] uppercase tracking-wider">
+              Retry Camera
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 2: FILE UPLOAD -->
+        <div id="uploadCard" onclick="triggerFileSelect(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" class="group relative bg-brandCard rounded-[2rem] p-8 border border-brandBorder hover:border-brandGold/60 transition-all duration-500 flex flex-col justify-between items-center text-center w-full min-h-[380px] md:min-h-[420px] overflow-hidden shadow-2xl cursor-pointer">
+          <!-- Ambient corner decoration -->
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-brandGold/10 to-transparent rounded-full group-hover:scale-110 transition-transform duration-700 pointer-events-none"></div>
+          
+          <input type="file" id="filePicker" accept="image/*" class="hidden" onchange="handleFileChange(event)">
+
+          <!-- 2A: Idle State -->
+          <div id="uploadIdleState" class="w-full h-full flex flex-col justify-between items-center space-y-4">
+            <div class="w-20 h-20 rounded-full bg-[#1e1c1b] border border-[#2e2924] flex items-center justify-center group-hover:scale-105 transition-transform duration-500 shrink-0">
+              <i data-lucide="upload" class="w-6 h-6 text-brandGold"></i>
+            </div>
+            <div class="space-y-3 px-2">
+              <h3 class="font-cormorant text-2xl tracking-wide font-light">Upload Photo Document</h3>
+              <p class="text-xs text-brandMuted leading-relaxed max-w-xs font-light">
+                Drag and drop your image file here or click to browse files (JPEG, PNG).
+              </p>
+            </div>
+            <button class="text-brandGold group-hover:text-brandLinen text-[11px] uppercase tracking-[0.25em] font-medium flex items-center gap-2 transition-colors duration-300 mt-2">
+              Select File <i data-lucide="chevron-right" class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"></i>
+            </button>
+          </div>
+
+          <!-- 2B: Preview / Scanning / Done States -->
+          <div id="uploadPreviewState" class="absolute inset-0 z-10 bg-brandCard flex flex-col items-center justify-center p-6 space-y-4 hidden">
+            <div class="relative w-36 h-36 rounded-full overflow-hidden border-2 border-brandGold/60 bg-brandDark">
+              <img id="uploadPreviewImg" src="" alt="File output" class="w-full h-full object-cover">
+              <div id="uploadScannerLine" class="absolute left-0 right-0 h-1 bg-brandGold shadow-[0_0_8px_#c5a880] scanner-line hidden"></div>
+            </div>
+            <div class="space-y-2 text-center w-full">
+              <h4 id="uploadStatusHeader" class="font-cormorant text-lg text-brandLinen italic">Evaluating Skin Spectrum...</h4>
+            </div>
+            <button onclick="resetCard('uploadCard', event)" class="text-xs text-brandMuted hover:text-brandLinen border-b border-brandBorder hover:border-white pb-0.5 transition-all uppercase tracking-widest mt-2">
+              Clear & Retake
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ================= STAGE 2: PREMIUM RESULTS DASHBOARD ================= -->
+    <div id="resultsStage" class="w-full max-w-6xl mx-auto space-y-12 hidden fade-in">
+      
+      <!-- Quiet Navigation Return Link (Top-level redirect back to capture main page) -->
+      <div class="w-full flex justify-start">
+        <button onclick="goToPreviousPage()" class="group flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-brandMuted hover:text-brandLinen transition-colors duration-300 py-2">
+          <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-1 flex-shrink-0"></i>
+          <span>Back to home</span>
+        </button>
+      </div>
+
+      <!-- Top Overview Bar -->
+      <div class="flex flex-col md:flex-row gap-8 items-center justify-between border-b border-brandBorder pb-8">
+        <div class="space-y-2 text-center md:text-left">
+          <span class="text-brandGold text-xs font-semibold tracking-[0.2em] uppercase">Vogue Analysis Complete</span>
+          <h2 id="resultsMainTitle" class="font-cormorant text-3xl sm:text-4xl md:text-5xl font-light leading-snug">
+            Your Skin Undertone: <span class="text-brandGold italic font-light">Analyzing...</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-brandMuted">
+            Optimised for premium clothing silhouettes, makeup styling, and luxury accessory choices.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button onclick="resetAll()" class="bg-[#1a1816] border border-brandBorder hover:border-brandGold text-brandLinen transition-all px-6 py-3.5 rounded-full flex items-center gap-2 text-xs uppercase tracking-widest font-medium">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Analyse Another Image
+          </button>
+        </div>
+      </div>
+
+      <!-- CHEESY RUNWAY INTRO CARD -->
+      <div class="border border-brandGold/30 bg-brandCard/60 rounded-[2rem] p-6 md:p-8 flex items-start gap-4 shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-brandGold/5 rounded-full blur-2xl"></div>
+        <div class="w-12 h-12 rounded-full bg-brandGold/15 flex items-center justify-center shrink-0 border border-brandGold/20">
+          <i data-lucide="sparkles" class="w-6 h-6 text-brandGold animate-pulse"></i>
+        </div>
+        <div class="space-y-2">
+          <span class="text-[9px] uppercase tracking-[0.3em] text-brandGold font-semibold">Runway Telemetry Analysis</span>
+          <p id="cheesyQuoteBox" class="font-cormorant text-xl md:text-2xl font-light italic text-[#edeae4] leading-relaxed">
+            "Are you gold or silver? You don't choose, you rule both."
+          </p>
+        </div>
+      </div>
+
+      <!-- Main Columns Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <!-- Left Column: Portrait & Stats Frame -->
+        <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-8 self-start">
+          
+          <!-- Portrait Frame -->
+          <div class="bg-brandCard rounded-3xl p-6 border border-brandBorder relative overflow-hidden space-y-6 shadow-xl">
+            <!-- Dynamic ambient backing glow based on detected undertone -->
+            <div id="dynamicGlowBackdrop" class="absolute inset-0 opacity-10 blur-[80px] pointer-events-none"></div>
+
+            <div class="relative z-10 aspect-square w-full rounded-2xl overflow-hidden border border-brandBorder bg-black">
+              <img id="resultsUserImg" src="" alt="Analyzed subject" class="w-full h-full object-cover">
+            </div>
+
+            <!-- Spectral readouts -->
+            <div class="relative z-10 space-y-4">
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-brandMuted">Sampled Tone Hex:</span>
+                <span class="font-mono text-xs uppercase tracking-widest text-brandLinen flex items-center gap-2">
+                  <span id="resultsSampledHexText">#FFFFFF</span>
+                  <span id="resultsSampledHexCircle" class="w-4 h-4 rounded-full inline-block border border-white/20"></span>
+                </span>
+              </div>
+
+              <div class="h-[1px] bg-brandBorder"></div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-black/30 p-3 rounded-xl border border-brandBorder">
+                  <span class="text-[9px] uppercase tracking-wider text-brandMuted block">Seasonal Aura</span>
+                  <span id="resultsSeasonBadge" class="font-cormorant text-lg text-brandLinen italic font-medium">Winter</span>
+                </div>
+                <div class="bg-black/30 p-3 rounded-xl border border-brandBorder">
+                  <span class="text-[9px] uppercase tracking-wider text-brandMuted block">Analysis Type</span>
+                  <span id="resultsRatingBadge" class="font-cormorant text-sm text-brandGold italic font-medium">Spectral Map</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Undertone Focus Callout -->
+          <div class="bg-brandCard rounded-3xl p-6 border border-brandBorder space-y-3 shadow-md">
+            <div class="flex items-center gap-2 text-brandGold">
+              <i data-lucide="sliders" class="w-5 h-5 text-brandGold"></i>
+              <h4 class="text-xs uppercase tracking-widest font-semibold">Undertone Signature</h4>
+            </div>
+            <h3 id="resultsUndertoneTitle" class="font-cormorant text-2xl font-light">Warm Peachy</h3>
+            <p id="resultsUndertoneDesc" class="text-xs text-brandMuted leading-relaxed font-light">
+              Characterised by warm peach-gold undertones that respond naturally to highly active light reflection.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Curated Interactive Report -->
+        <div class="lg:col-span-8 space-y-12">
+          
+          <!-- Section 1: Fabulous Colors -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-3">
+              <i data-lucide="palette" class="w-5 h-5 text-emerald-400"></i>
+              <h3 class="font-cormorant text-3xl font-light">1. Fabulous Colors (Your Gilded Aura)</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-brandMuted leading-relaxed">
+              These specific shades make your skin look flawlessly smooth and radiant, reducing dark circles instantly, and giving you an awake, luxurious look without extra makeup. Click any swatch to copy code.
+            </p>
+
+            <!-- Grid Container for Dynamic Swatches -->
+            <div id="resultsFabulousGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Dynamically populated in JS -->
+            </div>
+          </div>
+
+          <!-- Section 1B: Universal & Okay Colors -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-brandGold"></i>
+              <h3 class="font-cormorant text-3xl font-light">2. Okay / Universal Colors</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-brandMuted leading-relaxed">
+              Safe, balanced daily staples. These don't hurt your presentation, and they don't help much either—they are neutral, safe bases that work for effortless styling.
+            </p>
+
+            <!-- Horizontal flex swatches for Universal shades -->
+            <div id="resultsUniversalGrid" class="flex flex-wrap gap-4">
+              <!-- Dynamically populated in JS -->
+            </div>
+          </div>
+
+          <!-- Section 2: Best Metal & Hair Color Advisories -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+            
+            <!-- Best Metal Advisory Card -->
+            <div class="bg-brandCard rounded-3xl p-6 border border-brandBorder space-y-4 shadow-xl relative overflow-hidden flex flex-col justify-between h-full">
+              <div id="metalDynamicGlow" class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+              
+              <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-brandGold/10 flex items-center justify-center border border-brandGold/25">
+                    <i data-lucide="gem" class="w-5 h-5 text-brandGold animate-pulse"></i>
+                  </div>
+                  <h4 class="font-cormorant text-2xl font-light text-brandLinen">Glow Chemistry: Best Metals</h4>
+                </div>
+                
+                <div class="space-y-2">
+                  <h5 id="resultsMetalTitle" class="font-cormorant text-xl text-brandGold italic">Platinum & Sterling Silver</h5>
+                  <p id="resultsMetalDesc" class="text-xs sm:text-sm text-brandMuted leading-relaxed font-light">
+                    Your skin's underlying pigment parameters perfectly capture and reflect cool silver waves like liquid moonlight. Brassy, overly warm golds could disrupt this high-end look.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Mini Swatches for Metals to occupy empty space professionally -->
+              <div id="metalMiniSwatches" class="flex flex-wrap gap-2 pt-4 border-t border-brandBorder/40"></div>
+            </div>
+
+            <!-- Best Hair Colors Advisory Card -->
+            <div class="bg-brandCard rounded-3xl p-6 border border-brandBorder space-y-4 shadow-xl relative overflow-hidden flex flex-col justify-between h-full">
+              <div id="hairDynamicGlow" class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+              
+              <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-brandGold/10 flex items-center justify-center border border-brandGold/25">
+                    <i data-lucide="scissors" class="w-5 h-5 text-brandGold animate-pulse"></i>
+                  </div>
+                  <h4 class="font-cormorant text-2xl font-light text-brandLinen">Crown Harmony: Hair Colors</h4>
+                </div>
+                
+                <div class="space-y-2">
+                  <h5 id="resultsHairTitle" class="font-cormorant text-xl text-brandGold italic">Hair Recommendations</h5>
+                  <p id="resultsHairDesc" class="text-xs sm:text-sm text-brandMuted leading-relaxed font-light">
+                    Crown-level dye recommendations computed matching your physical facial pigment matrix.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Mini Swatches for Hair to occupy empty space professionally -->
+              <div id="hairMiniSwatches" class="flex flex-wrap gap-2 pt-4 border-t border-brandBorder/40"></div>
+            </div>
+
+          </div>
+
+          <!-- Section 3: Leave on the Rack -->
+          <div class="space-y-6 pt-4">
+            <div class="flex items-center gap-3 text-red-400">
+              <i data-lucide="x" class="w-5 h-5"></i>
+              <h3 class="font-cormorant text-3xl font-light text-brandLinen">3. Wrong Colors (Leave on the Rack)</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-brandMuted leading-relaxed">
+              These colors oppose your natural coloring matrix, washing out your healthy tone, casting fake dark shadows under your eyes, and creating dull hair. Avoid these under all premium scenarios.
+            </p>
+
+            <div id="resultsAvoidGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Dynamically populated in JS -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Live Status HUD Banner -->
+    <div id="calibrationBanner" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-[#1e1c1b] border border-brandGold/30 text-brandLinen px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-50 transition-all duration-500 opacity-0 pointer-events-none">
+      <i data-lucide="sparkles" class="w-5 h-5 text-brandGold shrink-0"></i>
+      <span id="calibrationBannerText" class="text-xs tracking-wider uppercase font-medium">Calibrated successfully. Skin tone registered.</span>
+    </div>
+
+    <!-- Virtual Calculation Canvas for extracting pixels -->
+    <canvas id="calcCanvas" class="hidden"></canvas>
+  </main>
+
+  <!-- Premium Footer -->
+  <footer class="w-full border-t border-[#24211e] py-10 px-8 text-center text-[11px] text-brandMuted/80 tracking-widest uppercase relative z-10">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      <span>© 2026 Vogue Vista Premium. Color Harmony Lab.</span>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-brandLinen transition-all">Specifications</a>
+        <span>•</span>
+        <a href="#" class="hover:text-brandLinen transition-all">Skin Biochemistry</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Webpage Core Functional Javascript -->
+  <script>
+    // Helper function for translating RGB values into highly valid Hex String tags
+    function rgbToHex(r, g, b) {
+      return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    // Initialize Lucide SVG Icons replacement on runtime load
+    try {
+      lucide.createIcons();
+    } catch (err) {
+      console.warn("Lucide icons load blocked, skipping direct initialization", err);
+    }
+
+    // Core Camera variables
+    let cameraStream = null;
+    let cameraFacingMode = 'user';
+
+    // Core Image Store
+    let capturedImgStore = null;
+
+    // Core DOM Element Refs
+    const webcamVideo = document.getElementById('webcamVideo');
+    const filePicker = document.getElementById('filePicker');
+    const calcCanvas = document.getElementById('calcCanvas');
+
+    // // Navigation fallback placeholder for user to add custom router redirects manual hooks
+    // function goToPreviousPage() {
+    //   // Default browser history fallback if nothing else is specified:
+    //   window.history.back();
+    // }
+    function goToPreviousPage() {
+  window.location.href = "index.htm"; // Replace with your actual HTML file name
+}
+
+    // Display high fashion banner notification
+    function triggerBanner(message) {
+      const banner = document.getElementById('calibrationBanner');
+      const bannerText = document.getElementById('calibrationBannerText');
+      bannerText.textContent = message;
+      
+      banner.classList.remove('opacity-0', 'pointer-events-none');
+      banner.classList.add('opacity-100');
+
+      setTimeout(() => {
+        banner.classList.remove('opacity-100');
+        banner.classList.add('opacity-0', 'pointer-events-none');
+      }, 5000);
+    }
+
+    // Camera Init Sequence (Activated inside Card 1)
+    async function triggerCameraInit(event) {
+      if (event) event.stopPropagation();
+      
+      // Guard: Block if webcam is already operating or has transitioned
+      if (!document.getElementById('camActiveState').classList.contains('hidden') ||
+          !document.getElementById('camPreviewState').classList.contains('hidden')) {
+        return;
+      }
+      
+      const camIdle = document.getElementById('camIdleState');
+      const camActive = document.getElementById('camActiveState');
+      const camError = document.getElementById('camErrorState');
+      const camPreview = document.getElementById('camPreviewState');
+
+      // Clear states
+      camIdle.classList.add('hidden');
+      camError.classList.add('hidden');
+      camPreview.classList.add('hidden');
+      camActive.classList.remove('hidden');
+
+      try {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+        }
+
+        const constraints = {
+          video: {
+            facingMode: cameraFacingMode,
+            width: { ideal: 600 },
+            height: { ideal: 600 },
+            aspectRatio: 1
+          },
+          audio: false
+        };
+
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        webcamVideo.srcObject = cameraStream;
+        webcamVideo.play();
+      } catch (err) {
+        console.error("Camera access failure: ", err);
+        const camErrorText = document.getElementById('camErrorText');
+        camErrorText.textContent = "Unable to access your camera. Please ensure permissions are granted or select Upload Photo instead.";
+        camActive.classList.add('hidden');
+        camError.classList.remove('hidden');
+      }
+    }
+
+    // Stop active webcam streams
+    function deactivateCamera(event) {
+      if (event) event.stopPropagation();
+      stopWebcamTracks();
+      
+      document.getElementById('camActiveState').classList.add('hidden');
+      document.getElementById('camIdleState').classList.remove('hidden');
+    }
+
+    function stopWebcamTracks() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+    }
+
+    // Flip Front / Rear Facing Lens dynamically inside standard card
+    function flipCameraOrientation(event) {
+      if (event) event.stopPropagation();
+      cameraFacingMode = cameraFacingMode === 'user' ? 'environment' : 'user';
+      triggerCameraInit();
+    }
+
+    // Snapping logic
+    function captureCameraSnapshot(event) {
+      if (event) event.stopPropagation();
+
+      if (webcamVideo.readyState === webcamVideo.HAVE_ENOUGH_DATA) {
+        const ctx = calcCanvas.getContext('2d');
+        const size = Math.min(webcamVideo.videoWidth, webcamVideo.videoHeight);
+        calcCanvas.width = 500;
+        calcCanvas.height = 500;
+
+        const startX = (webcamVideo.videoWidth - size) / 2;
+        const startY = (webcamVideo.videoHeight - size) / 2;
+
+        ctx.drawImage(webcamVideo, startX, startY, size, size, 0, 0, 500, 500);
+        
+        const dataUrl = calcCanvas.toDataURL('image/jpeg', 0.95);
+        stopWebcamTracks();
+
+        // Save into global store
+        capturedImgStore = dataUrl;
+
+        // Switch to preview mode for Card 1
+        document.getElementById('camActiveState').classList.add('hidden');
+        const camPreview = document.getElementById('camPreviewState');
+        camPreview.classList.remove('hidden');
+        
+        document.getElementById('camPreviewImg').src = dataUrl;
+        runCardScanAnimation('cameraCard', dataUrl);
+      }
+    }
+
+    // File selection sequences (Card 2)
+    function triggerFileSelect(event) {
+      if (event) event.stopPropagation();
+      // Guard: Block if preview state is already running
+      if (!document.getElementById('uploadPreviewState').classList.contains('hidden')) {
+        return;
+      }
+      filePicker.click();
+    }
+
+    function handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        processFile(file);
+      }
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Handles document dropping
+    function handleDrop(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const file = event.dataTransfer.files[0];
+      if (file) {
+        processFile(file);
+      }
+    }
+
+    function processFile(file) {
+      if (!file.type.startsWith('image/')) {
+        triggerBanner("Please upload a valid image file structure (JPEG, PNG).");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        capturedImgStore = dataUrl;
+        
+        // Switch to preview mode for Card 2
+        document.getElementById('uploadIdleState').classList.add('hidden');
+        const uploadPreview = document.getElementById('uploadPreviewState');
+        uploadPreview.classList.remove('hidden');
+
+        document.getElementById('uploadPreviewImg').src = dataUrl;
+        runCardScanAnimation('uploadCard', dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Dynamic scanning bar and canvas analysis sequence
+    function runCardScanAnimation(cardId, imageUrl) {
+      const prefix = cardId === 'cameraCard' ? 'cam' : 'upload';
+      const scannerLine = document.getElementById(`${prefix}ScannerLine`);
+      const statusHeader = document.getElementById(`${prefix}StatusHeader`);
+
+      // Reset components visibility
+      scannerLine.classList.remove('hidden');
+      statusHeader.textContent = "Evaluating Skin Spectrum...";
+      statusHeader.classList.add('animate-pulse');
+
+      // Stage-based progress simulation to recreate high-end user feedback feeling
+      setTimeout(() => {
+        statusHeader.textContent = "Calibrating Chromatic Matrix...";
+        setTimeout(() => {
+          statusHeader.textContent = "Compiling Seasonal Harmony...";
+          setTimeout(() => {
+            // Stop scanning inside card
+            scannerLine.classList.add('hidden');
+            statusHeader.classList.remove('animate-pulse');
+            statusHeader.textContent = "Chromatic Mapped";
+
+            // Extract values and immediately transition to report
+            extractPalettePreview(imageUrl);
+          }, 1200);
+        }, 1000);
+      }, 1000);
+    }
+
+    // // Direct pixel render & seamless transition to report (With Safety Bypass Timer)
+    // function extractPalettePreview(imageUrl) {
+    //   let analysisTriggered = false;
+
+    //   // Safety bypass: If canvas rendering hangs or image load delays, trigger report anyway!
+    //   const safetyTimeout = setTimeout(() => {
+    //     if (!analysisTriggered) {
+    //       console.warn("Analysis loading delayed. Proceeding using default calibration.");
+    //       analysisTriggered = true;
+    //       executeDirectSynthesis(197, 168, 128, "#c5a880", imageUrl);
+    //     }
+    //   }, 1500);
+
+    //   const img = new Image();
+    //   img.onload = () => {
+    //     if (analysisTriggered) return;
+    //     analysisTriggered = true;
+    //     clearTimeout(safetyTimeout);
+
+    //     let rAvg = 195;
+    //     let gAvg = 150;
+    //     let bAvg = 118;
+
+    //     try {
+    //       const tempCanvas = document.createElement('canvas');
+    //       const tempCtx = tempCanvas.getContext('2d');
+    //       tempCanvas.width = 50;
+    //       tempCanvas.height = 50;
+    //       tempCtx.drawImage(img, 0, 0, 50, 50);
+
+    //       const pixels = tempCtx.getImageData(0, 0, 50, 50).data;
+    //       let rSum = 0, gSum = 0, bSum = 0, count = 0;
+
+    //       for (let i = 0; i < pixels.length; i += 4) {
+    //         const r = pixels[i];
+    //         const g = pixels[i+1];
+    //         const b = pixels[i+2];
+    //         if (r > 60 && g > 40 && b > 20 && r > g && g > b) {
+    //           rSum += r;
+    //           gSum += g;
+    //           bSum += b;
+    //           count++;
+    //         }
+    //       }
+
+    //       if (count > 0) {
+    //         rAvg = Math.round(rSum / count);
+    //         gAvg = Math.round(gSum / count);
+    //         bAvg = Math.round(bSum / count);
+    //       }
+    //     } catch (canvasErr) {
+    //       console.warn("Canvas parsing sandboxed or blocked. Reverting to safe telemetry values.", canvasErr);
+    //       rAvg = 195;
+    //       gAvg = 150;
+    //       bAvg = 118;
+    //     }
+
+    //     const capturedHex = rgbToHex(rAvg, gAvg, bAvg);
+
+    //     // Extract and transition to report based on pixel properties directly
+    //     setTimeout(() => {
+    //       executeDirectSynthesis(rAvg, gAvg, bAvg, capturedHex, imageUrl);
+    //     }, 600);
+    //   };
+
+    //   img.onerror = (err) => {
+    //     if (analysisTriggered) return;
+    //     analysisTriggered = true;
+    //     clearTimeout(safetyTimeout);
+    //     console.warn("Image load failed. Proceeding using custom fallback mechanics.", err);
+    //     executeDirectSynthesis(197, 168, 128, "#c5a880", imageUrl);
+    //   };
+
+    //   img.src = imageUrl;
+    // }
+
+    // --- REPLACE YOUR OLD extractPalettePreview WITH THIS ---
+async function extractPalettePreview(imageUrl) {
+  const filePicker = document.getElementById('filePicker');
+  let fileToUpload = null;
+
+  // 1. Identify where the image came from (Webcam snapshot or File Picker)
+  if (capturedImgStore && capturedImgStore.startsWith('data:image')) {
+    // If it's a webcam snapshot (Base64 string), convert it to a standard file blob
+    const byteString = atob(capturedImgStore.split(',')[1]);
+    const mimeString = capturedImgStore.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    fileToUpload = new Blob([ab], { type: mimeString });
+  } else if (filePicker.files && filePicker.files[0]) {
+    // If it came from the dropzone/file upload picker
+    fileToUpload = filePicker.files[0];
+  }
+
+  // Guard Clause: If no image data is found, reset and halt execution safely
+  if (!fileToUpload) {
+    console.error("No valid image source binary discovered.");
+    triggerBanner("Capture source missing. Please attempt upload again.");
+    return;
+  }
+
+  // 2. Wrap the image inside a digital Form container envelope
+  const apiPayload = new FormData();
+  // 'file' MUST match the name expected by your Django view: request.FILES['file']
+  apiPayload.append('file', fileToUpload, 'user_capture.jpg'); 
+
+  try {
+    // 3. Dispatch the real-time image matrix over the network connection
+    // Ensure the trailing slash ('/') is present for Django router compatibility
+    const restResponse = await fetch('http://127.0.0.1:8000/api/v1/analyze-color/', {
+      method: 'POST',
+      body: apiPayload
+    });
+
+    if (!restResponse.ok) {
+      throw new Error(`Server returned error status: ${restResponse.status}`);
+    }
+
+    // 4. Capture the computed seasonal payload returned from Django
+    const serverResult = await restResponse.json();
+    console.log("Django REST Response processing verified successfully:", serverResult);
+
+    // 5. Stream the server data straight into your UI dashboard rendering engine
+    executeLiveReportBinding(imageUrl, serverResult);
+
+  } catch (apiError) {
+    console.error("Critical API connection drop:", apiError);
+    triggerBanner(`Backend Server Unreachable. Reverting to local simulation.`);
+    
+    // Safety Fallback: If your Django server is turned off, this ensures the app still shows a result
+    const mockUndertone = (Math.random() > 0.5) ? 'cool' : 'warm';
+    renderToneAnalysisReport(imageUrl, mockUndertone, "#C5A880");
+  }
+}
+
+// --- ADD THIS CHANNELS BINDING FUNCTION IMMEDIATELY BELOW IT ---
+function executeLiveReportBinding(imageUrl, serverData) {
+  // Bind Header Titles dynamically matching your video demonstration
+  document.getElementById('resultsMainTitle').innerHTML = `
+    Your Skin Undertone: <span class="text-brandGold block sm:inline italic font-light">${serverData.title}</span>
+  `;
+  
+  // Populate general info blocks
+  document.getElementById('cheesyQuoteBox').textContent = `"${serverData.cheesy}"`;
+  document.getElementById('resultsUserImg').src = imageUrl;
+  document.getElementById('resultsSampledHexText').textContent = serverData.sampled_hex;
+  document.getElementById('resultsSampledHexCircle').style.backgroundColor = serverData.sampled_hex;
+  document.getElementById('resultsSeasonBadge').textContent = serverData.season;
+  
+  // Set Signature Cards
+  document.getElementById('resultsUndertoneTitle').textContent = serverData.signature_name;
+  document.getElementById('resultsUndertoneDesc').textContent = serverData.signature_desc;
+  document.getElementById('dynamicGlowBackdrop').style.backgroundColor = serverData.glow_colors[0].hex;
+
+  // Bind Dynamic Advisory Cards (Metals)
+  document.getElementById('resultsMetalTitle').textContent = serverData.metal_title;
+  document.getElementById('resultsMetalDesc').textContent = serverData.metal_desc;
+  document.getElementById('metalDynamicGlow').style.backgroundColor = serverData.metal_glow;
+
+  // Bind Dynamic Advisory Cards (Hair Colors)
+  document.getElementById('resultsHairTitle').textContent = serverData.hair_title;
+  document.getElementById('resultsHairDesc').textContent = serverData.hair_desc;
+  document.getElementById('hairDynamicGlow').style.backgroundColor = serverData.hair_glow;
+
+  // Render Mini Metal Pill Elements
+  const metalSwatchesContainer = document.getElementById('metalMiniSwatches');
+  metalSwatchesContainer.innerHTML = '';
+  serverData.metal_swatches.forEach(swatch => {
+    metalSwatchesContainer.innerHTML += `
+      <div class="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-full border border-brandBorder">
+        <span class="w-3.5 h-3.5 rounded-full border border-white/10" style="background-color: ${swatch.hex};"></span>
+        <span class="text-[9px] font-mono text-brandMuted uppercase tracking-wider">${swatch.name}</span>
+      </div>`;
+  });
+
+  // Render Mini Hair Pill Elements
+  const hairSwatchesContainer = document.getElementById('hairMiniSwatches');
+  hairSwatchesContainer.innerHTML = '';
+  serverData.hair_swatches.forEach(swatch => {
+    hairSwatchesContainer.innerHTML += `
+      <div class="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-full border border-brandBorder">
+        <span class="w-3.5 h-3.5 rounded-full border border-white/10" style="background-color: ${swatch.hex};"></span>
+        <span class="text-[9px] font-mono text-brandMuted uppercase tracking-wider">${swatch.name}</span>
+      </div>`;
+  });
+
+  // Generate the Premium 8-Swatch "Fabulous" grid layout
+  const fabulousGrid = document.getElementById('resultsFabulousGrid');
+  fabulousGrid.innerHTML = '';
+  serverData.glow_colors.forEach(color => {
+    fabulousGrid.innerHTML += `
+      <div onclick="copyHexToClipboard('${color.hex}')" class="group bg-[#1a1816] hover:bg-[#201d1a] border border-brandBorder hover:border-brandGold/40 transition-all p-4 rounded-2xl flex items-center justify-between cursor-pointer shadow-md">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl border border-white/10 shrink-0 shadow-inner" style="background-color: ${color.hex};"></div>
+          <div class="space-y-0.5">
+            <span class="font-cormorant text-lg font-light text-brandLinen block leading-snug">${color.name}</span>
+            <span class="block text-[10px] font-mono text-brandMuted">${color.hex} — <span class="italic text-[9px] text-brandGold">Fabulous</span></span>
+          </div>
+        </div>
+        <div class="text-[10px] text-brandMuted group-hover:text-brandGold transition-colors flex items-center gap-1 shrink-0">
+          Copy <i data-lucide="copy" class="w-3 h-3"></i>
+        </div>
+      </div>`;
+  });
+
+  // Generate Universal Staples Row
+  const universalGrid = document.getElementById('resultsUniversalGrid');
+  universalGrid.innerHTML = '';
+  serverData.universal_colors.forEach(color => {
+    universalGrid.innerHTML += `
+      <div onclick="copyHexToClipboard('${color.hex}')" class="group bg-[#181615]/60 hover:bg-[#1e1c1b] border border-brandBorder px-4 py-3 rounded-full flex items-center gap-3 cursor-pointer transition-all shadow-sm">
+        <span class="w-4 h-4 rounded-full border border-white/10 shrink-0" style="background-color: ${color.hex};"></span>
+        <span class="font-mono text-xs text-brandLinen group-hover:text-brandGold transition-colors">${color.name} (${color.hex})</span>
+      </div>`;
+  });
+
+  // Generate the 3 "Wrong Colors" (Leave on the Rack) Layout blocks
+  const avoidGrid = document.getElementById('resultsAvoidGrid');
+  avoidGrid.innerHTML = '';
+  serverData.avoid_colors.forEach(color => {
+    avoidGrid.innerHTML += `
+      <div class="bg-[#1a1816]/50 border border-[#2c1a1a]/50 p-4 rounded-2xl flex items-center gap-4 h-full">
+        <div class="w-12 h-12 rounded-xl border border-white/5 shrink-0" style="background-color: ${color.hex};"></div>
+        <div class="space-y-1">
+          <span class="font-cormorant text-lg font-light text-brandLinen">${color.name}</span>
+          <p class="text-[10px] text-brandMuted leading-snug">${color.desc}</p>
+        </div>
+      </div>`;
+  });
+
+  // Smoothly trigger transition elements visibility sweep animations
+  document.getElementById('captureStage').classList.add('hidden');
+  document.getElementById('resultsStage').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Re-render Lucide vector nodes across new elements
+  try { lucide.createIcons(); } catch (e) {}
+}
+    // Direct Synthesis without Quiz
+    function executeDirectSynthesis(rAvg, gAvg, bAvg, capturedHex, imageUrl) {
+      triggerBanner("Synthesizing pixel index with direct pigment analysis...");
+
+      // Heuristic color math to determine cool/warm/neutral
+      let computedUndertone = 'neutral';
+      const redGreenDiff = rAvg - gAvg;
+      const greenBlueDiff = gAvg - bAvg;
+
+      if (redGreenDiff > 42 && greenBlueDiff > 32) {
+        computedUndertone = 'warm';
+      } else if (redGreenDiff < 36 || greenBlueDiff < 18) {
+        computedUndertone = 'cool';
+      } else {
+        computedUndertone = 'neutral';
+      }
+
+      renderToneAnalysisReport(imageUrl, computedUndertone, capturedHex);
+    }
+
+    // Spectral Mapping Report Generator
+    function renderToneAnalysisReport(imageUrl, undertone, sampledHex) {
+      let analysis = {};
+
+      if (undertone === 'cool') {
+        analysis = {
+          season: "Cool Tone (Blue-Based)",
+          cheesy: "Are you sculpted from pure glacier ice? Because you're giving absolute frostbite to anyone looking too close! Icy blue hues and raspberry coordinates are your personal runway crown jewels.",
+          undertoneTitle: "Icy Blue-Based Crystal",
+          undertoneDesc: "Your physical parameters display deep cooler blood matrices and pink/blue light dispersion profiles that thrive in high contrast and icy environments.",
+          metalTitle: "Sterling Silver & Platinum",
+          metalDesc: "Your skin's underlying pigment parameters perfectly capture and reflect cool silver waves like liquid moonlight. Steer clear of brassy, overly warm golds which can disrupt your crisp natural clarity.",
+          metalGlow: "#a5f3fc",
+          hairTitle: "Icy Platinum & Cool Espresso",
+          hairDesc: "Ashy tones are your absolute crown royalty. Embrace high-fashion platinum blonde, cool ash browns, dark espresso, or jet obsidian black. Avoid brassy gold, copper, and warm honey browns, which can conflict with your cool cellular glow.",
+          hairGlow: "#be185d",
+          metalSwatches: [
+            { name: "Moonlight Silver", hex: "#cbd5e1" },
+            { name: "White Gold", hex: "#f1f5f9" },
+            { name: "Prism Platinum", hex: "#e2e8f0" }
+          ],
+          hairSwatches: [
+            { name: "Icy Platinum", hex: "#e2e8f0" },
+            { name: "Ash Brown", hex: "#5c524d" },
+            { name: "Obsidian Black", hex: "#0a0a0a" },
+            { name: "Cool Espresso", hex: "#27211e" }
+          ],
+          glowColors: [
+            { name: "Icy Celestial Blue", hex: "#a5f3fc", desc: "Reflects immaculate clear, cool slate-like brightness near your face." },
+            { name: "Raspberry Seduction", hex: "#be185d", desc: "Brings out the vivid healthy rosy glow of your natural circulation." },
+            { name: "Royal Lavender", hex: "#c084fc", desc: "Neutralizes sallow reflections and highlights clean jaw symmetry." },
+            { name: "Vibrant Emerald", hex: "#047857", desc: "Creates dramatic high-contrast perimeter that elevates the iris focus." },
+            { name: "Orchid Pink", hex: "#db2777", desc: "An energetic cool pink that highlights cheek contour lines beautifully." },
+            { name: "Midnight Sapphire", hex: "#1e3a8a", desc: "A stately, powerful deep blue that frames skin with rich intensity." },
+            { name: "Silver Mist", hex: "#94a3b8", desc: "A sleek, metallic-reflecting grey that complements icy eye hues." },
+            { name: "Cool Cranberry", hex: "#9d174d", desc: "Deep wine red that accentuates lip definition and sharp features." }
+          ],
+          universalColors: [
+            { name: "Classic Navy", hex: "#1e3a8a" },
+            { name: "Deep Charcoal", hex: "#374151" },
+            { name: "Heather Slate", hex: "#6b7280" }
+          ],
+          avoidColors: [
+            { name: "Vibrant Tangerine Orange", hex: "#f97316", desc: "Clashes with cool proteins, casting yellow sallow shades onto your chin." },
+            { name: "Mustard Gold", hex: "#eab308", desc: "Accentuates under-eye dark circles and fatigue shadows instantly." },
+            { name: "Cinnamon Sand", hex: "#7c2d12", desc: "Can wash out and completely dull natural crown hair highlights." }
+          ]
+        };
+      } else if (undertone === 'warm') {
+        analysis = {
+          season: "Warm Tone (Yellow-Based)",
+          cheesy: "Did you just walk out of a golden hour filter, or are you actually holding the sun hostage? Warm terracotta and sun-kissed honey shades are practically bowing down to you!",
+          undertoneTitle: "Golden Yellow-Based Glow",
+          undertoneDesc: "Your chromatic telemetry reflects a golden peach base layer that flourishes under rich, warm, sun-lit spectrums.",
+          metalTitle: "18K Yellow Gold & Rose Gold",
+          metalDesc: "The solar energy of gold merges seamlessly with your rich peach-olive proteins, creating a high-fashion, cohesive, lit-from-within glow.",
+          metalGlow: "#fb923c",
+          hairTitle: "Golden Honey & Rich Auburn",
+          hairDesc: "Flourish with solar-infused pigments. Golden blonde, honey brown, rich warm chestnut, copper, auburn, or warm golden-black highlight your warm peach-olive base. Avoid pale ash blonde or grey, which can wash out your radiant warmth.",
+          hairGlow: "#b45309",
+          metalSwatches: [
+            { name: "18K Gold", hex: "#fbbf24" },
+            { name: "Rose Gold", hex: "#fda4af" },
+            { name: "Amber Bronze", hex: "#b45309" }
+          ],
+          hairSwatches: [
+            { name: "Golden Blonde", hex: "#fcd34d" },
+            { name: "Honey Brown", hex: "#92400e" },
+            { name: "Auburn Red", hex: "#7c2d12" },
+            { name: "Warm Black", hex: "#171412" }
+          ],
+          glowColors: [
+            { name: "Terracotta Sunset", hex: "#c2410c", desc: "Accentuates your natural golden-peach matrix and adds depth." },
+            { name: "Rich Forest Moss", hex: "#15803d", desc: "Sets a beautifully organic, grounded perimeter around your cheek structures." },
+            { name: "Toasted Honey Mustard", hex: "#b45309", desc: "Flashes golden hour vibes onto your facial center, highlighting your skin sheen." },
+            { name: "Premium Peach Coral", hex: "#fb923c", desc: "Unlocks rich warm rosiness, making you look like you slept 8 hours instantly." },
+            { name: "Desert Amber", hex: "#d97706", desc: "A glowing, rich golden-yellow that enhances gold undertones." },
+            { name: "Olive Branch", hex: "#65a30d", desc: "A muted golden-green that balances redness while elevating skin luminosity." },
+            { name: "Warm Toasted Cocoa", hex: "#78350f", desc: "A rich chocolatey neutral that serves as a stunning structural frame." },
+            { name: "Marigold Bloom", hex: "#f59e0b", desc: "Vibrant warm yellow that makes natural eye flecks pop with energy." }
+          ],
+          universalColors: [
+            { name: "Warm Off-White", hex: "#fafaf9" },
+            { name: "Rich Camel Taupe", hex: "#d97706" },
+            { name: "Soft Forest Sage", hex: "#14532d" }
+          ],
+          avoidColors: [
+            { name: "Icy Slate Grey", hex: "#9ca3af", desc: "Drains your healthy solar warmth, making you look artificially tired." },
+            { name: "Neon Violet Magenta", hex: "#d946ef", desc: "Clashes aggressively, casting harsh contrasting purples over your face." },
+            { name: "Matte Blue Lavender", hex: "#818cf8", desc: "Neutralizes your glowing undertones and leads to a fatigued, grey cast." }
+          ]
+        };
+      } else {
+        // Neutral Tone
+        analysis = {
+          season: "Neutral Tone (Balanced Warm-Cool)",
+          cheesy: "You must be an international peace treaty, because your undertones have achieved perfect global balance! Gold? Silver? Please, you don't choose, you dominate both.",
+          undertoneTitle: "Balanced Soft Hybrid",
+          undertoneDesc: "The ultimate chromatic privilege. You do not lean clearly yellow or pink, granting you a safe VIP pass to navigate both warm and cool spectrums.",
+          metalTitle: "Dual Affinity: Gold & Silver",
+          metalDesc: "The absolute privilege of the hybrid. You look spectacular combining both liquid sterling silver and warm golds in a single styling statement without either washing you out.",
+          metalGlow: "#c5a880",
+          hairTitle: "Chocolate Mocha & Soft Caramel",
+          hairDesc: "The luxury of balance allows you to shine in transitional, balanced tones. Sandy blonde, rich chocolate brown, soft caramel, and mahogany look gorgeous. Steer clear of extremely icy silver or overly aggressive neon hair shades.",
+          hairGlow: "#a8a29e",
+          metalSwatches: [
+            { name: "Sterling Silver", hex: "#cbd5e1" },
+            { name: "Champagne Gold", hex: "#eab308" },
+            { name: "Rose Gold", hex: "#fda4af" }
+          ],
+          hairSwatches: [
+            { name: "Sandy Blonde", hex: "#fef08a" },
+            { name: "Soft Caramel", hex: "#ca8a04" },
+            { name: "Mocha Brown", hex: "#451a03" },
+            { name: "Warm Mahogany", hex: "#78350f" }
+          ],
+          glowColors: [
+            { name: "Deep Sage Teal", hex: "#0f766e", desc: "Strikes the perfect cool-warm balance that emphasizes eye clarity." },
+            { name: "Soft Dusty Rose", hex: "#fda4af", desc: "Provides beautiful fresh brightness that feels natural and light-reflecting." },
+            { name: "Earthy Taupe Sand", hex: "#a8a29e", desc: "An impeccable editorial slate that coordinates flawlessly with both jewel tones and pastels." },
+            { name: "Muted Olive Sage", hex: "#4d7c0f", desc: "Soothes overall face redness while maintaining highly fashionable depth." },
+            { name: "Premium Plum", hex: "#581c87", desc: "A balanced deep purple that flatters both warm highlights and cool frames." },
+            { name: "Chiffon Cream", hex: "#fef9c3", desc: "Soft, gentle golden-cream that doesn't overpower neutral value scales." },
+            { name: "Slate Teal", hex: "#115e59", desc: "A moody blue-green that highlights lip and brow definition subtly." },
+            { name: "Ethereal Lilac", hex: "#e9d5ff", desc: "A delicate lavender-pink hybrid that adds soft-focus radiance to your skin." }
+          ],
+          universalColors: [
+            { name: "Balanced Navy", hex: "#1e3a8a" },
+            { name: "Universal Off-White", hex: "#f5f5f4" },
+            { name: "Slate Mist", hex: "#4b5563" }
+          ],
+          avoidColors: [
+            { name: "Screaming Neon Yellow", hex: "#facc15", desc: "Completely overpowers your delicate, balanced skin chemistry." },
+            { name: "Chalky Stark White", hex: "#ffffff", desc: "Can wash out your subtle neutral values, making you look slightly pale." },
+            { name: "Harsh Obsidian Black", hex: "#000000", desc: "Heavy blacks might overpower your balanced features if not styled with contrasts." }
+          ]
+        };
+      }
+
+      // Populate Report Header with Dynamic Resulted Undertone (Replacing Color Harmony)
+      document.getElementById('resultsMainTitle').innerHTML = `
+        Your Skin Undertone: <span class="text-brandGold block sm:inline italic font-light">${analysis.season}</span>
+      `;
+      
+      document.getElementById('cheesyQuoteBox').textContent = `"${analysis.cheesy}"`;
+      document.getElementById('resultsUserImg').src = imageUrl;
+      document.getElementById('resultsSampledHexText').textContent = sampledHex;
+      document.getElementById('resultsSampledHexCircle').style.backgroundColor = sampledHex;
+      document.getElementById('resultsSeasonBadge').textContent = analysis.season;
+      document.getElementById('resultsUndertoneTitle').textContent = analysis.undertoneTitle;
+      document.getElementById('resultsUndertoneDesc').textContent = analysis.undertoneDesc;
+      document.getElementById('dynamicGlowBackdrop').style.backgroundColor = analysis.glowColors[0].hex;
+
+      // Populate Best Metal Advisory
+      document.getElementById('resultsMetalTitle').textContent = analysis.metalTitle;
+      document.getElementById('resultsMetalDesc').textContent = analysis.metalDesc;
+      document.getElementById('metalDynamicGlow').style.backgroundColor = analysis.metalGlow;
+
+      // Populate Best Hair Advisory
+      document.getElementById('resultsHairTitle').textContent = analysis.hairTitle;
+      document.getElementById('resultsHairDesc').textContent = analysis.hairDesc;
+      document.getElementById('hairDynamicGlow').style.backgroundColor = analysis.hairGlow;
+
+      // Populate Best Metal Swatches
+      const metalSwatchesContainer = document.getElementById('metalMiniSwatches');
+      metalSwatchesContainer.innerHTML = '';
+      analysis.metalSwatches.forEach(swatch => {
+        metalSwatchesContainer.innerHTML += `
+          <div class="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-full border border-brandBorder">
+            <span class="w-3.5 h-3.5 rounded-full border border-white/10" style="background-color: ${swatch.hex};"></span>
+            <span class="text-[9px] font-mono text-brandMuted uppercase tracking-wider">${swatch.name}</span>
+          </div>
+        `;
+      });
+
+      // Populate Best Hair Swatches
+      const hairSwatchesContainer = document.getElementById('hairMiniSwatches');
+      hairSwatchesContainer.innerHTML = '';
+      analysis.hairSwatches.forEach(swatch => {
+        hairSwatchesContainer.innerHTML += `
+          <div class="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-full border border-brandBorder">
+            <span class="w-3.5 h-3.5 rounded-full border border-white/10" style="background-color: ${swatch.hex};"></span>
+            <span class="text-[9px] font-mono text-brandMuted uppercase tracking-wider">${swatch.name}</span>
+          </div>
+        `;
+      });
+
+      // Populate Fabulous Swatches Grid
+      const fabulousGrid = document.getElementById('resultsFabulousGrid');
+      fabulousGrid.innerHTML = '';
+      analysis.glowColors.forEach(color => {
+        fabulousGrid.innerHTML += `
+          <div onclick="copyHexToClipboard('${color.hex}')" class="group bg-[#1a1816] hover:bg-[#201d1a] border border-brandBorder hover:border-brandGold/40 transition-all p-4 rounded-2xl flex items-center justify-between cursor-pointer shadow-md">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl border border-white/10 shrink-0 shadow-inner animate-fade-in" style="background-color: ${color.hex};"></div>
+              <div class="space-y-0.5">
+                <span class="font-cormorant text-lg font-light text-brandLinen block leading-snug">${color.name}</span>
+                <span class="block text-[10px] font-mono text-brandMuted">${color.hex} — <span class="italic text-[9px] text-brandGold">Fabulous</span></span>
+              </div>
+            </div>
+            <div class="text-[10px] text-brandMuted group-hover:text-brandGold transition-colors flex items-center gap-1 shrink-0">
+              Copy <i data-lucide="copy" class="w-3 h-3"></i>
+            </div>
+          </div>
+        `;
+      });
+
+      // Populate Okay / Universal colors
+      const universalGrid = document.getElementById('resultsUniversalGrid');
+      universalGrid.innerHTML = '';
+      analysis.universalColors.forEach(color => {
+        universalGrid.innerHTML += `
+          <div onclick="copyHexToClipboard('${color.hex}')" class="group bg-[#181615]/60 hover:bg-[#1e1c1b] border border-brandBorder px-4 py-3 rounded-full flex items-center gap-3 cursor-pointer transition-all shadow-sm">
+            <span class="w-4 h-4 rounded-full border border-white/10 shrink-0" style="background-color: ${color.hex};"></span>
+            <span class="font-mono text-xs text-brandLinen group-hover:text-brandGold transition-colors">${color.name} (${color.hex})</span>
+          </div>
+        `;
+      });
+
+      // Populate Wrong Colors
+      const avoidGrid = document.getElementById('resultsAvoidGrid');
+      avoidGrid.innerHTML = '';
+      analysis.avoidColors.forEach(color => {
+        avoidGrid.innerHTML += `
+          <div class="bg-[#1a1816]/50 border border-[#2c1a1a]/50 p-4 rounded-2xl flex items-center gap-4 h-full">
+            <div class="w-12 h-12 rounded-xl border border-white/5 shrink-0" style="background-color: ${color.hex};"></div>
+            <div class="space-y-1">
+              <span class="font-cormorant text-lg font-light text-brandLinen">${color.name}</span>
+              <p class="text-[10px] text-brandMuted leading-snug">${color.desc}</p>
+            </div>
+          </div>
+        `;
+      });
+
+      // Show Stage 2 Results and hide Stage 1 with premium transition
+      document.getElementById('captureStage').classList.add('hidden');
+      document.getElementById('resultsStage').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Re-initialize dynamic icons
+      try {
+        lucide.createIcons();
+      } catch (err) {
+        console.warn("Lucide icon generation skipped", err);
+      }
+    }
+
+    // Reset card elements back to idle layout
+    function resetCard(cardId, event) {
+      if (event) event.stopPropagation();
+      
+      if (cardId === 'cameraCard') {
+        stopWebcamTracks();
+        document.getElementById('camPreviewState').classList.add('hidden');
+        document.getElementById('camActiveState').classList.add('hidden');
+        document.getElementById('camErrorState').classList.add('hidden');
+        document.getElementById('camIdleState').classList.remove('hidden');
+      } else if (cardId === 'uploadCard') {
+        filePicker.value = ''; // Reset input element
+        document.getElementById('uploadPreviewState').classList.add('hidden');
+        document.getElementById('uploadIdleState').classList.remove('hidden');
+      }
+    }
+
+    function resetAll() {
+      resetCard('cameraCard');
+      resetCard('uploadCard');
+      capturedImgStore = null;
+
+      document.getElementById('resultsStage').classList.add('hidden');
+      document.getElementById('captureStage').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
