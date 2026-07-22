@@ -132,7 +132,7 @@ This project is licensed under the MIT License.
 
 ## 👩‍💻 Author
 
-**Mahika Mangaonkar**
+**Mahika Mangaonkar**, **Saavi Kotadia**, **Asmita Tiwari**, **Kumud Chouhan**
 
 B.Tech CSE (AIML)
 
