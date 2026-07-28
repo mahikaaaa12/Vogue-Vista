@@ -59,7 +59,6 @@ Vogue Vista is a modern AI-powered fashion platform that helps users discover ou
 - JWT Authentication
 - bcrypt
 - Multer
-- Cloudinary
 
 ## AI Service
 
