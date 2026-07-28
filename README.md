@@ -1,139 +1,468 @@
 # 👗 Vogue Vista
 
-Vogue Vista is an AI-powered virtual fashion and styling platform designed to help users discover outfits, receive personalized fashion recommendations, and make informed styling decisions. The platform combines modern web technologies with intelligent fashion assistance to create an engaging and interactive user experience.
+> **AI-Powered Virtual Fashion & Styling Platform**
+
+Vogue Vista is a modern AI-powered fashion platform that helps users discover outfits, manage their digital wardrobe, and receive personalised styling recommendations. Built with a scalable architecture using **React, Node.js, Express, MongoDB, and Python (FastAPI)**, the platform combines intelligent fashion assistance with a seamless user experience.
+
+---
 
 ## ✨ Features
 
-* 👕 Personalized outfit recommendations
-* 🎨 Color palette and style analysis
-* 🧥 Virtual wardrobe management
-* 📌 Fashion inspiration and trend discovery
-* 🤖 AI-powered styling assistant
-* 📱 Responsive design for desktop and mobile devices
-* ❤️ Save and manage favorite outfits
-* 🔍 Smart search and outfit filtering
+- 👕 AI-powered outfit recommendations
+- 👗 Personalised fashion suggestions based on user preferences
+- 🎨 Colour palette & style analysis
+- 👚 Virtual wardrobe management
+- ❤️ Save and organise favourite outfits
+- 🔍 Smart outfit search & filtering
+- 📈 Fashion trend discovery
+- 🤖 AI Stylist Assistant
+- 📱 Fully responsive across desktop and mobile devices
+- 🔐 Secure authentication using JWT
+- ☁️ Cloud image storage support
 
-## 🛠️ Tech Stack
+---
 
-### Frontend
+# 🏗️ Architecture
 
-* HTML5
-* CSS3
-* JavaScript
+```
+                React + Tailwind
+                       │
+                    Axios API
+                       │
+              Node.js + Express
+                       │
+        ┌──────────────┴──────────────┐
+        │                             │
+   MongoDB Atlas              FastAPI (Python)
+        │                             │
+ User Data & Outfits       AI Recommendation Engine
+```
 
-### Backend
+---
 
-* Django
-* Python
+# 🚀 Tech Stack
 
-### Database
+## Frontend
 
-* SQLite (Development)
-* PostgreSQL (Production Ready)
+- React.js
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+- Framer Motion
+- GSAP
 
-## 📂 Project Structure
+## Backend
 
-```text
-Vogue-Vista/
-├── apps/                # Application modules and business logic
-├── fashion/             # Templates, static files, and fashion-related resources
-├── voguevista/          # Django project configuration
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
+- Node.js
+- Express.js
+- JWT Authentication
+- bcrypt
+- Multer
+
+## AI Service
+
+- FastAPI
+- Python
+- NumPy
+- Pandas
+- Scikit-learn
+- Pillow
+- OpenCV
+- Transformers *(Future)*
+
+## Database
+
+- MongoDB Atlas
+- Mongoose
+
+---
+
+# 📂 Project Structure
+
+```
+VogueVista/
+
+├── client/                 # React Frontend
+│   ├── public/
+│   └── src/
+│       ├── assets/
+│       ├── components/
+│       ├── context/
+│       ├── hooks/
+│       ├── layouts/
+│       ├── pages/
+│       ├── services/
+│       └── App.jsx
 │
-├── db.sqlite3           # Development database
-├── manage.py            # Django entry point
-└── README.md            # Project documentation
+├── server/                 # Express Backend
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── utils/
+│   └── server.js
+│
+├── ml-service/             # Python AI Service
+│   ├── app.py
+│   ├── recommendation.py
+│   ├── color_analysis.py
+│   ├── body_shape.py
+│   └── requirements.txt
+│
+├── README.md
+└── .gitignore
 ```
 
-## 🚀 Installation
+---
 
-### 1. Clone the Repository
+# 🌟 Core Modules
 
-```bash
-git clone https://github.com/mahikaaaa12/Vogue-Vista.git
-cd Vogue-Vista
+### 👤 User Authentication
+
+- Register & Login
+- JWT Authentication
+- Secure Password Hashing
+- Profile Management
+
+---
+
+### 👚 Virtual Wardrobe
+
+- Upload clothing items
+- Organise wardrobe by category
+- Filter by season, colour, and occasion
+- Edit & delete wardrobe items
+
+---
+
+### 🤖 AI Stylist
+
+Receive intelligent recommendations based on:
+
+- Occasion
+- Weather
+- Favourite colours
+- Body shape
+- Fashion preferences
+- Season
+
+---
+
+### 🎨 Colour Analysis
+
+Upload an image to receive:
+
+- Dominant colour extraction
+- Matching colour combinations
+- Styling suggestions
+
+---
+
+### 🔍 Smart Search
+
+Search outfits using:
+
+- Category
+- Occasion
+- Colour
+- Season
+- Brand
+- Style
+
+---
+
+### ❤️ Wishlist
+
+Save your favourite outfits and access them anytime.
+
+---
+
+# 🛣️ API Overview
+
+## Authentication
+
+```
+POST   /api/auth/register
+POST   /api/auth/login
+GET    /api/auth/profile
+PUT    /api/auth/profile
 ```
 
-### 2. Create a Virtual Environment
+## Wardrobe
 
-```bash
-python -m venv venv
+```
+GET    /api/wardrobe
+POST   /api/wardrobe
+PUT    /api/wardrobe/:id
+DELETE /api/wardrobe/:id
 ```
 
-### 3. Activate the Virtual Environment
+## Outfits
 
-**Windows**
-
-```bash
-venv\Scripts\activate
+```
+GET    /api/outfits
+GET    /api/outfits/:id
 ```
 
-**Mac/Linux**
+## Recommendations
 
-```bash
-source venv/bin/activate
+```
+POST   /api/recommend
+GET    /api/recommend/history
 ```
 
-### 4. Install Dependencies
+---
+
+# 🤖 AI Endpoints
+
+```
+POST /predict/style
+POST /predict/body-shape
+POST /predict/color
+POST /recommend/outfit
+POST /recommend/weather
+```
+
+---
+
+# 💾 Database Collections
+
+## Users
+
+```
+name
+email
+password
+preferences
+bodyShape
+avatar
+```
+
+## Wardrobe
+
+```
+userId
+image
+category
+colour
+season
+brand
+tags
+```
+
+## Outfits
+
+```
+title
+category
+description
+images
+occasion
+colour
+season
+price
+rating
+```
+
+## Wishlist
+
+```
+userId
+outfitId
+```
+
+## Recommendations
+
+```
+userId
+recommendedOutfits
+reason
+createdAt
+```
+
+---
+
+# 🚀 Installation
+
+## 1. Clone the Repository
 
 ```bash
+git clone https://github.com/yourusername/VogueVista.git
+
+cd VogueVista
+```
+
+---
+
+## 2. Install Frontend Dependencies
+
+```bash
+cd client
+npm install
+```
+
+---
+
+## 3. Install Backend Dependencies
+
+```bash
+cd ../server
+npm install
+```
+
+---
+
+## 4. Install Python Dependencies
+
+```bash
+cd ../ml-service
+
 pip install -r requirements.txt
 ```
 
-### 5. Apply Migrations
+---
+
+## 5. Configure Environment Variables
+
+Create a `.env` file inside the **server** directory.
+
+```env
+PORT=5000
+
+MONGODB_URI=your_mongodb_connection
+
+JWT_SECRET=your_secret_key
+
+CLOUDINARY_CLOUD_NAME=
+
+CLOUDINARY_API_KEY=
+
+CLOUDINARY_API_SECRET=
+
+AI_SERVICE_URL=http://localhost:8000
+```
+
+---
+
+## 6. Start MongoDB
+
+Use MongoDB Atlas or a local MongoDB instance.
+
+---
+
+## 7. Start the Backend
 
 ```bash
-python manage.py migrate
+cd server
+
+npm run dev
 ```
 
-### 6. Run the Development Server
+---
+
+## 8. Start the AI Service
 
 ```bash
-python manage.py runserver
+cd ml-service
+
+uvicorn app:app --reload
 ```
 
-Open your browser and visit:
+---
 
-```text
-http://127.0.0.1:8000/
+## 9. Start the Frontend
+
+```bash
+cd client
+
+npm run dev
 ```
 
-## 🎯 Future Enhancements
+---
 
-* 3D Virtual Try-On Experience
-* AI Body Shape Analysis
-* Event-Based Outfit Recommendations
-* Weather-Aware Styling Suggestions
-* Pinterest Integration
-* Fashion Trend Forecasting
-* Social Outfit Sharing
-* E-commerce Integration
+Visit
 
-## 📸 Screenshots
+```
+http://localhost:5173
+```
 
-Add screenshots of:
+---
 
-* Home Page
-* Dashboard
-* Outfit Recommendation System
-* Wardrobe Management
-* AI Stylist
+# 📸 Screenshots
 
-## 🤝 Contributing
+| Home | Dashboard |
+|------|-----------|
+| Add Screenshot | Add Screenshot |
 
-Contributions are welcome. Feel free to fork the repository, create a feature branch, and submit a pull request.
+| AI Stylist | Virtual Wardrobe |
+|------------|------------------|
+| Add Screenshot | Add Screenshot |
 
-## 📄 License
+| Recommendations | Wishlist |
+|----------------|-----------|
+| Add Screenshot | Add Screenshot |
 
-This project is licensed under the MIT License.
+---
 
-## 👩‍💻 Author
+# 🚧 Roadmap
 
-**Mahika Mangaonkar**, **Saavi Kotadia**, **Asmita Tiwari**, **Kumud Chouhan**
+- [ ] AI Outfit Recommendation Engine
+- [ ] Virtual Wardrobe
+- [ ] Body Shape Detection
+- [ ] Skin Tone Analysis
+- [ ] Weather-Based Recommendations
+- [ ] Event-Based Styling
+- [ ] AI Chat Stylist
+- [ ] Virtual Try-On
+- [ ] Fashion Trend Prediction
+- [ ] Pinterest Integration
+- [ ] Social Outfit Sharing
+- [ ] Shopping & E-commerce Integration
 
-B.Tech CSE (AIML)
+---
 
-Passionate about AI, Web Development, and Fashion Technology.
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature/new-feature
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add new feature"
+```
+
+4. Push your branch
+
+```bash
+git push origin feature/new-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+# 👥 Team
+
+Developed with ❤️ by the **Vogue Vista Team**.
+
+---
+
+## ⭐ Support
+
+If you found this project helpful, consider giving it a **⭐ Star** on GitHub. It motivates us to keep building and improving!
